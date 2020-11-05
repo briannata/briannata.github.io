@@ -130,8 +130,10 @@ table {
     .cover, .jiujitsu, .wrestling, .aboutme {
         width: 100vw;
         min-height: 56.25vw;
-        background-size: contain;
+        background-size:cover; 
+        background-repeat:no-repeat;
         background-attachment: scroll;
+        background-position:center;
     }
 
     body, html, button {
