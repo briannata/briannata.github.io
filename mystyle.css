@@ -1,0 +1,176 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font: 400 1vw/1.8 "Lato", sans-serif;
+    color: #777;
+}
+
+button {
+    font: 400 1vw/1.8 "Lato", sans-serif;
+    color: white;
+    background-color: #4287f5;
+    padding: 0.3vw 0.7vw;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 0.5vw;
+}
+
+.cover, .jiujitsu, .wrestling, .aboutme {
+    position: relative;
+    opacity: 0.75;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100%;
+}
+.cover {
+    background-image: url("./static/img/cover3.jpg");
+}
+.jiujitsu {
+    background-image: url("./static/img/jiujitsucover.jpg");
+}
+.wrestling {
+    background-image: url("./static/img/wrestlingcover.jpg");
+}
+
+.aboutme {
+    background-image: url("./static/img/cover.jpg");
+}
+
+.caption {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    color: #000;
+}
+
+.caption span.title {
+    color: #f7f7f7;
+    padding: 1.1vw;
+    font-size: 1.7vw;
+    letter-spacing: 0.6vw;
+    background-color: #111;
+}
+
+h3 {
+    letter-spacing: 0.3vw;
+    text-transform: uppercase;
+    font: 1.25vw "Lato", sans-serif;
+    color: #111;
+}
+
+h3 {
+    text-align: center;
+}
+
+.text {
+    color: #777;
+    background-color:white;
+    text-align:center;
+    padding:3.3vw 13.3vw;
+    text-align: justify;
+}
+
+.footer {
+    color: #777;
+    background-color:white;
+    text-align:center;
+    padding:0.3vw 13.3vw;
+    text-align: justify;
+}
+
+.text a.link {
+    color: #4287f5;
+    font-size: 1.3vw;
+    margin-bottom: 0;
+    text-decoration: none;
+}
+
+.text a.link:hover {
+    text-decoration: underline;
+}
+
+.text a.author {
+    color: #4287f5;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-decoration: none;
+}
+
+.text a.author:hover {
+    text-decoration: underline;
+}
+
+table {
+    vertical-align: top;
+}
+
+.icon, .firsticon {
+    height: 4vw;
+    border-radius:3.3vw;
+}
+
+.icon {
+    margin-left: 1.3vw;
+}
+
+.pic {
+    width: 20vw;
+    margin-left: 3.3vw;
+}
+
+@media only screen and (max-device-width: 1366px) {
+    .parallax {
+        background-attachment: scroll;
+    }
+
+    .cover, .jiujitsu, .wrestling, .aboutme {
+        width: 100vw;
+        min-height: 56.25vw;
+        background-size: contain;
+        background-attachment: scroll;
+    }
+
+    body, html, button {
+        font-size: 3vw;
+        letter-spacing: 1.8;
+    }
+
+    button {
+        border-radius: 0.5vw;
+    }
+
+    .caption span.title, .caption span.border {
+        font-size: 4vw;
+        letter-spacing: 1vw;
+    }
+
+    h3 {
+        font-size: 4vw;
+    }
+
+    .text {
+        padding:1vw 1vw;
+    }
+
+    .text a.link {
+        font-size: 3vw;
+    }
+
+    .icon, .firsticon {
+        height: 10vw;
+        border-radius: 12vw;
+    }
+
+    .icon {
+        margin-left: 2vw;
+    }
+
+    .pic {
+        width: 35vw;
+        margin-left: 3vw;
+    }
+}
