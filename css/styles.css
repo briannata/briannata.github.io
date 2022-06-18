@@ -10112,3 +10112,16 @@ section.resume-section .resume-section-content {
     padding-bottom: 5rem;
   }
 }
+
+button {
+  background-color: #17a2b8;
+  border-radius: 25px;
+  padding: 1rem;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  opacity: 100%;
+}
+
+button:hover {
+  color: rgba(255, 255, 255, 1);
+}
