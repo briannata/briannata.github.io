@@ -1,0 +1,1154 @@
+/*jshint esversion: 6 */
+// 2021-10-14 (karol)
+/* ------------------------------ helper functions--------------------------- */
+if (typeof TTSperformance !== 'undefined') {
+	var TTSperformance = window.performance.now();
+}
+console.log('TTS - start JS file loading');
+var pageID = window.location.href;
+
+function getParams(search_string) {
+	var parse = function (params, pairs) {
+		var pair = pairs[0];
+		var parts = pair.split('=');
+		var key = decodeURIComponent(parts[0]);
+		var value = decodeURIComponent(parts.slice(1).join('='));
+
+		// Handle multiple parameters of the same name
+		if (typeof params[key] === "undefined") {
+			params[key] = value;
+		} else {
+			params[key] = [].concat(params[key], value);
+		}
+		return pairs.length == 1 ? params : parse(params, pairs.slice(1));
+	};
+
+	if (search_string === undefined) {
+		return null;
+	}
+	// Get rid of leading ?
+	return search_string.length == 0 ? null : parse({}, search_string.split('&'));
+}
+
+function splitText(str) {
+    "use strict";
+    var chunks = str.match(/.{1,154}(\s|$)/g);
+	return chunks;
+}
+
+function toWords(s) {
+	var th = ['', ' thousand', ' million', ' billion', ' trillion', ' quadrillion', ' quintillion'];
+	var dg = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+	var tn = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+	var tw = ['twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+    s = s.toString();
+    s = s.replace(/[\, ]/g, '');
+    if (s != parseFloat(s)) return 'not a number';
+    var x = s.indexOf('.');
+    if (x == -1) x = s.length;
+    if (x > 15) return 'too big';
+    var n = s.split('');
+    var str = '';
+    var sk = 0;
+    for (var i = 0; i < x; i++) {
+        if ((x - i) % 3 == 2) {
+            if (n[i] == '1') {
+                str += tn[Number(n[i + 1])] + ' ';
+                i++;
+                sk = 1;
+            } else if (n[i] != 0) {
+                str += tw[n[i] - 2] + ' ';
+                sk = 1;
+            }
+        } else if (n[i] != 0) {
+            str += dg[n[i]] + ' ';
+            if ((x - i) % 3 == 0) str += 'hundred ';
+            sk = 1;
+        }
+        if ((x - i) % 3 == 1) {
+            if (sk) str += th[(x - i - 1) / 3] + ' ';
+            sk = 0;
+        }
+    }
+    if (x != s.length) {
+        var y = s.length;
+        str += 'point ';
+        for (var j = x + 1; j < y; j++) str += dg[n[j]] + ' ';
+    }
+    return str.replace(/\s+/g, ' ');
+}
+
+
+/* ------------------------------ configuration ----------------------------- */
+
+function storeHistory(key, value) {
+	if (window.localStorage) {
+		window.localStorage.setItem(key, value);
+	} else {
+		var days = 30;
+		var expires = new Date();
+		expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+		document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+	}
+}
+
+function getHistory(key) {
+	var keyValue = null;
+	var tmpkey = null;
+
+	if (window.localStorage && window.localStorage.getItem(key)) {
+		keyValue = window.localStorage.getItem(key);
+	} else {
+		tmpkey = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+		if (tmpkey) {
+			keyValue = tmpkey[2];
+		}
+	}
+
+	return keyValue;
+}
+
+function deleteHistory(key) {
+	if (window.localStorage) {
+		window.localStorage.removeItem(key);
+	} else {
+		var destdate = new Date();
+		destdate.setTime(destdate.getTime() - (1000 * 60 * 60 * 24));
+		var expires = "expires=" + destdate.toGMTString();
+		window.document.cookie = key + "=" + "; " + expires;
+	}
+
+}
+
+var TTSsettings = {
+	'rate': 1,
+	'pitch': 1,
+	'voice': null
+};
+var nothingspoken = true;
+
+//rate pitch voice
+function saveSettings() {
+	storeHistory('TTSrate', TTSsettings.rate);
+	storeHistory('TTSpitch', TTSsettings.pitch);
+	
+	if (TTSsettings.voice) {
+		storeHistory('TTSvoice', TTSsettings.voice);
+	}
+}
+
+function removeSettings() {
+	deleteHistory('TTSrate');
+	deleteHistory('TTSpitch');
+	deleteHistory('TTSvoice');
+}
+
+function loadSettings() {
+	TTSsettings.rate = getHistory('TTSrate') ? getHistory('TTSrate') : 1;
+	TTSsettings.pitch = getHistory('TTSpitch') ? getHistory('TTSpitch') : 1;
+	TTSsettings.voice = getHistory('TTSvoice') ? getHistory('TTSvoice') : null;
+}
+
+/* ----------------------------- adding controls ---------------------------- */
+
+console.log('TTS - finished - reading start functions took ' + (window.performance.now() - TTSperformance) + 'ms');
+console.log('TTS - start - adding controls');
+TTSperformance = window.performance.now();
+
+var TTSelem = document.createElement('div');
+TTSelem.setAttribute('data-app', 'ttsreader');
+TTSelem.classList.add('ttshid');
+TTSelem.classList.add('tts-vertical');
+
+TTSelem.innerHTML = '<button class="btn btn--primary" data-action="activate" id="tts-read-aloud">Read<span class="tts-aloud"> aloud</span></button><div class="ttshid vertical" data-type="playpanel"><div class="controls"><button id="tts-prev" title="Back"><span>&lt; Prev</button></span><button id="tts-play" title="Play"><span>Play</span></button><button id="tts-next" title="Forward"><span>Next &gt;</span></button><button id="tts-pause" title="Pause/Resume"><span>Pause</span></button><button id="tts-cancel" title="Stop"><span>Stop</span></button><button id="tts-settings" title="Settings"><span>Settings</span></button><button class="ttshid" style="float:right;" data-action="close">x</button></div></div><div class="tts-panel ttshid" data-type="setpanel"><div style="width:100%;height:16px;"><button style="float:right;" data-action="close" id="tts-close">x</button></div><form><div class="controls-row"><div class="cell1"><label for="rate" class="ttscontrol">Rate</label></div><div class="cell2"><input type="range" min="0.7" max="1.3" value="1" step="0.1" id="rate" class="ttscontrol"></div><div class="cell3"><div class="ttscontrol rate-value">1</div></div><div class="clearfix"></div></div><div class="controls-row"><div class="cell1"><label for="pitch" class="ttscontrol">Pitch</label></div><div class="cell2"><input type="range" min="0" max="2" value="1" step="0.1" id="pitch" class="ttscontrol"></div><div class="cell3"><div class="ttscontrol pitch-value">1</div></div><div class="clearfix"></div></div><div class="selgroup"><label for="tts-voice-sel" class="voice">Select a voice:<span class="icon-help-alt icon-size-16"></span></label><div class="tooltip">Voices are browser-dependent.<br>Tip: Chrome provides the most options.</div><select id="tts-voice-sel" name="tts-voice-sel"></select></div><div class="controls"><button id="tts-cancel" type="reset" title="Reset values">Reset</button><button id="tts-save" type="submit" title="Save settings">Save</button></div></form></div>';
+
+
+
+if (document.querySelector('#container')) {
+	document.querySelector('#container').append(TTSelem);
+} else if(document.querySelector('#fw-content > .row.wide-narrow > .col.wide')){
+	document.querySelector('#fw-content > .row.wide-narrow > .col.wide').append(TTSelem);
+} else if (document.querySelector('#fw-content > div.row.full[data-owner="ID"] > .col.full')) {
+	document.querySelector('#fw-content').append(TTSelem);
+} else if (document.querySelectorAll('#fw-content > div.row.quarters[data-owner="ID"] > .col.quarter, #fw-content > div.row.thirds[data-owner="ID"] > .col.third, #fw-content > div.row.halves[data-owner="ID"] > .col.half, #fw-content > div.row.twothirds-third[data-owner="ID"] > .col.two-third')) {
+	let pagenodes = document.querySelectorAll('#fw-content > div.row.full[data-owner="ID"] > .col.full, #fw-content > div.row.wide-narrow[data-owner="ID"] > .col.wide, #fw-content > div.row.quarters[data-owner="ID"] > .col.quarter, #fw-content > div.row.thirds[data-owner="ID"] > .col.third, #fw-content > div.row.halves[data-owner="ID"] > .col.half, #fw-content > div.row.twothirds-third[data-owner="ID"] > .col.two-third');
+	pagenodes[pagenodes.length -1].append(TTSelem);
+} else {
+	console.log('Uknown layout: please contact with kakamins');
+}
+console.log('TTS - finished - adding controls took ' + (window.performance.now() - TTSperformance) + 'ms');
+TTSperformance = window.performance.now();
+/* ------------------------------ adding styles ----------------------------- */
+console.log('TTS - start - adding styles');
+TTSperformance = window.performance.now();
+if (document.querySelector('div[data-app="ttsreader"]')) {
+	let TTSstylelink = this.document.createElement('link');
+	TTSstylelink.setAttribute('rel', 'stylesheet');
+	TTSstylelink.setAttribute('type', 'text/css');
+	TTSstylelink.setAttribute('href', 'https://weare.cisco.com/c/dam/r/weare/assets/cec-tts/cisco-tts-engine.css');
+	//TTSstylelink.setAttribute('href', 'styles/cisco-tts-engine.css');
+	document.querySelector('div[data-app="ttsreader"]').append(TTSstylelink);
+}
+console.log('TTS - finished - adding styles took ' + (window.performance.now() - TTSperformance) + 'ms');
+TTSperformance = window.performance.now();
+/* ------------------------------- engine code ------------------------------ */
+console.log('TTS - start - adding engine code');
+TTSperformance = window.performance.now();
+let TTSsynth = window.speechSynthesis;
+TTSsynth.cancel();
+let TTSvoices = [];
+let TTSvoiceSelect = document.querySelector('div[data-app="ttsreader"] select');
+let TTStext2 = [];
+let TTStext_ready = [];
+let TTSinputForm = document.querySelector('div[data-app="ttsreader"] form');
+let TTSpitch = document.querySelector('div[data-app="ttsreader"] #pitch');
+let TTSpitchValue = document.querySelector('div[data-app="ttsreader"] .pitch-value');
+let TTSrate = document.querySelector('div[data-app="ttsreader"] #rate');
+let TTSrateValue = document.querySelector('div[data-app="ttsreader"] .rate-value');
+let TTScurrent = 0;
+let TTScancel = false;
+let TTSbutton = '';
+var TTSpaused = false;
+let TTSfirstplay = true;
+
+function getElementY(query) {
+	return window.pageYOffset + document.querySelector(query).getBoundingClientRect().top;
+}
+
+function doScrolling(element, duration) {
+	let tmpoff = 0;
+	if (document.querySelector('#header-primary')) {
+		tmpoff = document.querySelector('#header-primary').offsetHeight;
+	}
+	var startingY = window.pageYOffset;
+	var elementY = getElementY(element) - tmpoff;
+	// If element is close to page's bottom then window will scroll only to some position above the element.
+	var targetY = document.body.scrollHeight - elementY < window.innerHeight ? document.body.scrollHeight - window.innerHeight : elementY;
+	var diff = targetY - startingY - 16;
+	// Easing function: easeInOutCubic
+	// From: https://gist.github.com/gre/1650294
+	var easing = function (t) {
+		return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+	};
+
+	var start;
+
+	if (!diff) return;
+
+	// Bootstrap our animation - it will get called right before next frame shall be rendered.
+	window.requestAnimationFrame(function step(timestamp) {
+		if (!start) start = timestamp;
+		// Elapsed miliseconds since start of scrolling.
+		var time = timestamp - start;
+		// Get percent of completion in range [0, 1].
+		var percent = Math.min(time / duration, 1);
+		// Apply the easing.
+		// It can cause bad-looking slow frames in browser performance tool, so be careful.
+		percent = easing(percent);
+
+		window.scrollTo(0, startingY + diff * percent);
+		//window.scrollTo(0, startingY - 16 + diff * percent);
+
+		// Proceed with animation as long as we wanted it to.
+		if (time < duration) {
+			window.requestAnimationFrame(step);
+		}
+	});
+}
+
+function splitNumber(str){
+	return str.split(/(?=(?:..)*$)/).join(' ');
+}
+console.log('TTS - finished - adding engine code took ' + (window.performance.now() - TTSperformance) + 'ms');
+TTSperformance = window.performance.now();
+
+// and here's native the trick (works everywhere)
+function r(f) {
+	/in/.test(document.readyState) ? setTimeout('r(' + f + ')', 9) : f();
+}
+// use like
+
+r(function () {
+	console.log('TTS - page loaded - loading took ' + (window.performance.now() - TTSperformance) + 'ms');
+	console.log('TTS - start - after load code');
+	TTSperformance = window.performance.now();
+
+	loadSettings();
+	if (!TTSrate && !TTSpitch) {
+		console.log('TTS application was not initialized (unusual page layout)!');
+		return;
+	}
+	TTSrate.value = (TTSsettings.rate) ? TTSsettings.rate : 1;
+	TTSpitch.value = (TTSsettings.pitch) ? TTSsettings.pitch : 1;
+	console.log('TTS - start - populate voices list');
+	TTSperformance = window.performance.now();
+	function populateVoiceList() {
+		TTSvoices = TTSsynth.getVoices();
+		TTSvoices = TTSvoices.sort(function (a, b) {
+			const aname = a.name.toUpperCase(),
+				bname = b.name.toUpperCase();
+			if (aname < bname) {
+				return -1;
+			} else if (aname == bname) {
+				return 0;
+			} else {
+				return +1;
+			}
+		});
+
+		var selectedIndex = TTSvoiceSelect.selectedIndex < 0 ? 0 : TTSvoiceSelect.selectedIndex;
+		
+		TTSvoiceSelect.innerHTML = '';
+		let j = 0;
+		let voicedone = false;
+		for (i = 0; i < TTSvoices.length; i++) {
+			if (String(TTSvoices[i].lang).indexOf(document.documentElement.lang + '-') >= 0) {
+				var option = document.createElement('option');
+				option.textContent = TTSvoices[i].name + ' (' + TTSvoices[i].lang + ')';
+				option.setAttribute('data-lang', TTSvoices[i].lang);
+				option.setAttribute('data-name', TTSvoices[i].name);
+				let tmpname = TTSvoices[i].name + ' (' + TTSvoices[i].lang + ')';
+
+				if (tmpname === TTSsettings.voice) {
+					selectedIndex = j;
+					voicedone = true;
+				}
+
+				if (!voicedone && TTSvoices[i].default) {
+					option.textContent += ' -- DEFAULT';
+					selectedIndex = j;
+				}
+
+				TTSvoiceSelect.appendChild(option);
+				j += 1;
+			}
+		}
+		
+		TTSvoiceSelect.selectedIndex = selectedIndex;
+		if ((TTSvoiceSelect.getElementsByTagName('option').length > 0) && !!TTSvoiceSelect.getElementsByTagName('option')[selectedIndex]) {
+			TTSvoiceSelect.getElementsByTagName('option')[selectedIndex].setAttribute('selected', 'selected');
+		}
+	}
+	
+	populateVoiceList();
+	console.log('TTS - finished - populate voices list took ' + (window.performance.now() - TTSperformance) + 'ms');
+	TTSperformance = window.performance.now();
+	console.log('TTS - start - get page text');
+	TTSperformance = window.performance.now();
+	var TTStemp0 = null;
+	var TTStemp = null;
+	var TTStemp0_child = false;
+	if (document.querySelector('.article-content')) {
+			var kj = 0;
+		TTStemp0 = document.querySelectorAll('.article-content, .story-article > blockquote');
+		TTStemp0.forEach(function(el){
+			if (el.children.length > 0) {
+				TTStemp0_child = true;
+			}
+		});
+		if (TTStemp0 && (TTStemp0.length > 0) && TTStemp0_child) {
+			TTStemp0.forEach(function(elz){
+				for (let i = 0, tcl = elz.children.length; i < tcl; i++) {
+					let element = elz.children[i];
+					element.setAttribute('data-ttstextid', kj);
+					kj++;
+				}
+			});
+		}
+		TTStemp = document.querySelector('.article-content').cloneNode(true);
+		TTStemp.innerHTML='';
+		TTStemp.className = '';
+		TTStemp0.forEach(function(el){
+			el.childNodes.forEach(function(ch){
+				TTStemp.appendChild(ch.cloneNode(true));
+			});
+		});	
+	} else if (document.querySelector('#fw-content')) {
+		
+		TTStemp0 = document.querySelectorAll('#fw-content > div.row.full[data-owner="ID"] > .col.full, #fw-content > div.row.wide-narrow[data-owner="ID"] > .col.wide, #fw-content > div.row.quarters[data-owner="ID"] > .col.quarter, #fw-content > div.row.thirds[data-owner="ID"] > .col.third, #fw-content > div.row.halves[data-owner="ID"] > .col.half, #fw-content > div.row.twothirds-third[data-owner="ID"] > .col.two-third');
+
+		/* ------------------ add right columns --------------- */
+		TTStemp0r = document.querySelectorAll('#fw-content > div.row.wide-narrow[data-owner="ID"] > .col.narrow');
+		TTStemp0 = Array.prototype.concat.call(...TTStemp0 , ...TTStemp0r );
+				
+		TTStemp0.forEach(function(el){
+			if (el.children.length > 0) {
+				TTStemp0_child = true;
+			}
+		});
+
+		var i = 0;
+		var j = 0;
+		if (document.querySelector('h1#fw-pagetitle')) {
+			document.querySelector('h1#fw-pagetitle').setAttribute('data-ttstextid', j);
+			j++;
+		}
+		if (TTStemp0 && (TTStemp0.length > 0) && TTStemp0_child) {
+			TTStemp0.forEach(function(elz){
+				for (let i = 0, tcl = elz.children.length; i < tcl; i++) {
+					let element = elz.children[i];
+					if (element.classList.contains('dmc-text')) {
+						element.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(el){
+							el.setAttribute('data-ttstextid', j);
+							j++;
+						});
+					} else if (element.classList.contains('halves') || element.classList.contains('thirds') || element.classList.contains('quarters')) {
+						element.querySelectorAll('.dmc-text').forEach(function(eldmc){
+							eldmc.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(eldmci){
+								eldmci.setAttribute('data-ttstextid', j);
+								j++;
+							});
+						});
+					} else if (element.classList.contains('dmc-drw')) {
+						element.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(el){
+							el.setAttribute('data-ttstextid', j);
+							j++;
+						});
+					} else if (element.classList.contains('custom-dropdown')) {
+						element.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(el){
+							el.setAttribute('data-ttstextid', j);
+							j++;
+						});
+					} else if (element.classList.contains('dmc-emphasis')) {
+						element.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(el){
+							el.setAttribute('data-ttstextid', j);
+							j++;
+						});
+					} else {
+						element.setAttribute('data-ttstextid', j);
+						j++;
+					}
+				}
+			});
+		}
+
+		TTStemp = document.querySelector('#fw-content').cloneNode(true);
+		TTStemp.innerHTML='';
+		TTStemp.className = '';
+		if (document.querySelector('h1#fw-pagetitle')) {
+			TTStemp.appendChild(document.querySelector('h1#fw-pagetitle').cloneNode(true));
+		}
+		TTStemp0.forEach(function(el){
+			el.childNodes.forEach(function(ch){
+				TTStemp.appendChild(ch.cloneNode(true));
+			});
+		});
+	}
+	console.log('TTS - finished - get page text took ' + (window.performance.now() - TTSperformance) + 'ms');
+	TTSperformance = window.performance.now();
+	console.log('TTS - start - parsing page text');
+
+	if (TTStemp && TTStemp.children && (TTStemp.children.length > 0)) {
+		TTStemp.querySelectorAll('style').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('script').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('link').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.star-rating-placeholder').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.article-image').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('.tts-skip').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		
+		TTStemp.querySelectorAll('#ratings').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('[data-text]').forEach(function (st) {
+			st.textContent = st.getAttribute('data-text');
+		});
+		TTStemp.querySelectorAll('[aria-label]').forEach(function (st) {
+			st.textContent = st.getAttribute('aria-label');
+		});
+
+		TTStemp.querySelectorAll('div.article-comment-meta').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.comments-container').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.related-content-container').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.related-content-container-lower').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.article-content div[data-app="ttsreader"]').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.article-content p:last-child').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('div.article-content p:first-child').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.article-content p:first-child').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div[data-app="ttsreader"]').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div#ratings').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('div.dmc-carousel').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		TTStemp.querySelectorAll('div.swiper-container.article-swiper').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('div.article-review').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		
+		TTStemp.querySelectorAll('hr').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('div.article-image-caption').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+		
+		TTStemp.querySelectorAll('p[style="font-size:20px; color:#007EBA"]').forEach(function (st) {
+			if (st.textContent.replace(/\s{2,}/g, ' ').toUpperCase() == 'CONNECT EVERYTHING. INNOVATE EVERYWHERE. BENEFIT EVERYONE.') {
+				st.parentNode.removeChild(st);
+			}
+		});
+		
+		TTStemp.querySelectorAll('div[data-app="trendapp"]').forEach(function (st) {
+			st.parentNode.removeChild(st);
+		});
+
+		TTStemp.querySelectorAll('div.dmc-text > p').forEach(function (st) {
+			if (st.textContent.replace(/\s{2,}/g, ' ').toUpperCase().trim() == 'THIS STORY WAS FEATURED ON THE CEC GLOBAL HOMEPAGE — MAKE IT YOUR HOMEPAGE.') {
+				st.parentNode.removeChild(st);
+			}
+		});
+
+		TTStemp.querySelectorAll('div.dmc-text').forEach(function (st) {
+			if (st.querySelector('.flexible-float-left > p > img')) {
+				st.querySelectorAll('.flexible-float-left > p > img').forEach(function (sti) {
+					sti.parentNode.parentNode.parentNode.removeChild(sti.parentNode.parentNode);
+				});
+			}
+			
+			if (st.querySelector('.flexible-float-right > p > img')) {
+				st.querySelectorAll('.flexible-float-right > p > img').forEach(function (sti) {
+					sti.parentNode.parentNode.parentNode.removeChild(sti.parentNode.parentNode);
+				});
+			}
+		});
+		//console.log('TTStemp=',TTStemp);
+
+		for (let i = 0, tl = TTStemp.children.length; i < tl; i++) {
+			let el = TTStemp.children[i];			
+			let txt = '';
+
+			if (el.classList.contains('dmc-text')) {
+				el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(ell){
+					txt = ell.textContent.replace(/\s{2,}/g, ' ').trim(' ');
+					if (txt.length > 0) {
+						let tmpentry = {};
+						tmpentry['ttsid'] = ell.getAttribute('data-ttstextid');
+						tmpentry['text'] = txt;
+						TTStext2.push(tmpentry);
+					}
+				});
+			} else if (el.classList.contains('halves') || el.classList.contains('thirds') || el.classList.contains('quarters')) {
+				el.querySelectorAll('.dmc-text').forEach(function(eldmc){
+					eldmc.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(eldmci){
+						txt = eldmci.textContent.replace(/\s{2,}/g, ' ').trim(' ');
+						if (txt.length > 0) {
+							let tmpentry = {};
+							tmpentry['ttsid'] = eldmci.getAttribute('data-ttstextid');
+							tmpentry['text'] = txt;
+							TTStext2.push(tmpentry);
+						}
+					});
+				});
+			} else if (el.classList.contains('custom-dropdown')){
+				el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(ell){
+					txt = ell.textContent.replace(/\s{2,}/g, ' ').trim(' ');
+					if (txt.length > 0) {
+						let tmpentry = {};
+						tmpentry['ttsid'] = ell.getAttribute('data-ttstextid');
+						tmpentry['text'] = txt;
+						TTStext2.push(tmpentry);
+					}
+				});
+			} else if (el.classList.contains('dmc-drw')){
+				el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(ell){
+					txt = ell.textContent.replace(/\s{2,}/g, ' ').trim(' ');
+					if (txt.length > 0) {
+						let tmpentry = {};
+						tmpentry['ttsid'] = ell.getAttribute('data-ttstextid');
+						tmpentry['text'] = txt;
+						TTStext2.push(tmpentry);
+					}
+				});
+			} else if (el.classList.contains('list-dots')) {
+				// ul is read as one string without li separation
+				let txtar = [];
+				el.querySelectorAll('li').forEach(function (st) {
+					txtar.push(st.textContent);
+				});
+				if (txtar.length > 0) {
+					let tmpentry = {};
+					tmpentry['ttsid'] = el.getAttribute('data-ttstextid');
+					tmpentry['text'] = txtar.join('. ').replace(/\s{2,}/g, ' ').trim(' ');
+					TTStext2.push(tmpentry);
+				}
+			} else if(el.classList.contains('dmc-emphasis')) {
+				el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,dt,dd').forEach(function(ell){
+					txt = ell.textContent.replace(/\s{2,}/g, ' ').trim(' ');
+					if (txt.length > 0) {
+						let tmpentry = {};
+						tmpentry['ttsid'] = ell.getAttribute('data-ttstextid');
+						tmpentry['text'] = txt;
+						TTStext2.push(tmpentry);
+					}
+				});
+
+			} else {
+				txt = el.textContent.replace(/\s{2,}/g, ' ').trim(' ');
+				if (txt.length > 0) {
+					let tmpentry = {};
+					tmpentry['ttsid'] = el.getAttribute('data-ttstextid');
+					tmpentry['text'] = String(txt);
+					TTStext2.push(tmpentry);
+				}
+			}
+		}
+
+		/* ------------------------ TEXT and MUMBERS replacements -------------------- */
+		if ((typeof TTSreplacements != 'undefined') && (TTSreplacements != null)) {
+			Object.values(TTStext2).forEach(function (obj){
+				if ((typeof obj.text !== 'undefined') && (String(obj.text).trim().length > 0)) {
+					for (let k = 0, trl = TTSreplacements.length; k < trl; k++) {
+						let reg = RegExp(TTSreplacements[k].s, 'g');
+						if (reg.test(obj.text) && (typeof TTSreplacements[k].r !== 'undefined') && (TTSreplacements[k].r != null)) {
+							//console.log('S=', TTSreplacements[k].s);
+							//console.log('R=', obj.text);
+							obj.text = String(obj.text).replace(reg, TTSreplacements[k].r);
+						}
+					}
+					
+					let reg = /\d+,?(\d+)?([.]?\d+)?/gm;
+					let str = obj.text;
+					if (reg.test(str)) {
+						let stra = str.match(reg);
+						for (let i = 0, stral = stra.length; i < stral; i++) {
+							str = str.replace(stra[i], toWords(stra[i]));
+						}
+						obj.text = str;
+					}
+				}
+			});
+		}
+
+		if ((typeof TTSreplacements_local != 'undefined') && (TTSreplacements_local != null)) {
+			Object.values(TTStext2).forEach(function (obj){
+				if ((typeof obj.text !== 'undefined') && (String(obj.text).trim().length > 0)) {
+					for (let k = 0, trl = TTSreplacements_local.length; k < trl; k++) {
+						let reg = RegExp(TTSreplacements_local[k].s, 'g');
+						if (reg.test(obj.text) && (typeof TTSreplacements_local[k].r !== 'undefined') && (TTSreplacements_local[k].r != null)) {
+							obj.text = String(obj.text).replace(reg, TTSreplacements_local[k].r);
+						}
+					}
+					
+					let reg = /\d+,?(\d+)?([.]?\d+)?/gm;
+					let str = obj.text;
+					if (reg.test(str)) {
+						let stra = str.match(reg);
+						for (let i = 0, stral = stra.length; i < stral; i++) {
+							str = str.replace(stra[i], toWords(stra[i]));
+						}
+						obj.text = str;
+					}
+				}
+			});
+		}
+
+		
+		TTStext_ready = [];
+		Object.values(TTStext2).forEach(function(obj){
+			//split parts
+			if (String(obj.text).length > 150) {
+				let temp_TTSparts = String(obj.text).split(/[.!?…;:]/);
+				for (let i = 0, il = temp_TTSparts.length; i < il; i++) {
+					if (temp_TTSparts[i].length > 150) {
+						let subparts = [];
+						let tmp_subparts = temp_TTSparts[i].split(/[–—]/);
+						for (j =0, jl = tmp_subparts.length; j < jl; j++) {
+							if (tmp_subparts[j].length > 150) {
+								// if subpart still longer split by ,
+								let tmp_subparts2 = tmp_subparts[j].split(',');
+								let TTSparts2 = [];
+								for (k =0, kl = tmp_subparts2.length; k < kl; k++) {
+									let TTSparts3 = [];
+									if (tmp_subparts2[k].length > 150) {
+										// if still longer split by char/word length
+										let TTSparts3 = splitText(tmp_subparts2[k]);
+
+										for (l = 0, ll = TTSparts3.length; l < ll; l++){
+											let tmpentry = {};
+											tmpentry['ttsid'] = obj.ttsid;
+											tmpentry['text'] = TTSparts3[l];
+											TTStext_ready.push(tmpentry);
+										}
+									} else {
+										let tmpentry = {};
+										tmpentry['ttsid'] = obj.ttsid;
+										tmpentry['text'] = tmp_subparts2[k];
+										TTStext_ready.push(tmpentry);
+									}
+								}
+							} else {
+								let tmpentry = {};
+								tmpentry['ttsid'] = obj.ttsid;
+								tmpentry['text'] = tmp_subparts[j];
+								TTStext_ready.push(tmpentry);
+							}
+						}
+					} else {
+						let tmpentry = {};
+						tmpentry['ttsid'] = obj.ttsid;
+						tmpentry['text'] = temp_TTSparts[i];
+						TTStext_ready.push(tmpentry);
+					}
+				}
+			} else {
+				TTStext_ready.push(obj);
+			}
+		});
+
+		//console.log(TTStext_ready);
+		TTStext_ready = TTStext_ready.filter(function(val){
+			return (typeof val.text !== 'undefined') && (String(val.text).length > 0);
+		});
+	}
+	console.log('TTS - finished - parsing page text took ' + (window.performance.now() - TTSperformance) + 'ms');
+	TTSperformance = window.performance.now();
+	console.log('TTS - start - assign other functions');
+	
+	var utterThis = null;
+	var TTSselchecked = false;
+
+	function runSpeak() {
+		TTSbutton = 'play';
+		if (!TTSselchecked && window.getSelection().anchorNode && (window.getSelection().anchorNode.length > 0)) {
+			let tmp = window.getSelection().anchorNode.parentNode.getAttribute('data-ttstextid');
+			tmp = tmp.length > 0 ? tmp : '0';
+			tmp = parseInt(tmp, 10);
+			TTScurrent = Object.values(TTStext_ready).findIndex(item => item.ttsid == tmp);
+			speak();
+		} else {
+			TTSsynth.cancel();
+			speak();
+		}
+	}
+
+	function runSpeakPauseResume() {
+		if (TTSsynth.speaking) {
+			//console.log('speaking', pageID);
+			if (TTSpaused) {
+				console.log('TTScurrent', TTScurrent);
+				TTSsynth.resume();
+				TTSpaused = false;
+				document.querySelector('[data-app="ttsreader"] #tts-pause > span').textContent = 'Pause';
+				document.querySelector('[data-app="ttsreader"] #tts-pause').classList.remove('active');
+				TTSbutton = 'play';
+				document.querySelector('[data-app="ttsreader"] #tts-play').classList.add('active');
+				document.querySelector('[data-app="ttsreader"] #tts-play').focus();
+				//console.log('resume');
+			} else {
+				TTSsynth.pause();
+				TTSpaused = true;
+				TTSbutton = 'pause';
+				document.querySelector('[data-app="ttsreader"] #tts-pause > span').textContent = 'Resume';
+				document.querySelector('[data-app="ttsreader"] #tts-pause').classList.add('active');
+				document.querySelector('[data-app="ttsreader"] #tts-play').classList.remove('active');
+				//console.log('not resume');
+			}
+		}
+	}
+
+	var TTSplayed = false;
+
+	function afterEnd() {
+		nothingspoken = false;
+		TTSsubcur = 0;
+		TTSselchecked = true;
+		
+		if (TTScancel) {
+			TTScurrent = 0;
+			nothingspoken = true;
+			TTScancel = false;
+			return;
+		}
+		
+		if (TTSbutton == 'play') {
+			TTScurrent += 1;
+			speak();
+		}
+		if (TTSbutton == 'next') {
+			TTSbutton = 'play';
+			speak();
+		}
+		if (TTSbutton == 'prev') {
+			TTSbutton = 'play';
+			speak();
+		}
+	}
+	
+
+	function runSpeakNext() {
+		TTSsubcur = 0;
+		subpartEnd = false;
+		TTSselchecked = true;
+		document.querySelector('button#tts-next').classList.add('active');
+		TTSbutton = 'next';
+		// get current ttsid
+		let tmpid = Object.values(TTStext_ready)[TTScurrent]['ttsid'];
+		//get highest index for such ttsid
+		let lastIndex = TTStext_ready.map(item => item.ttsid == tmpid).lastIndexOf(true);
+		TTScurrent = lastIndex  +1;
+		TTSsynth.cancel();
+		TTScurrent = TTScurrent >= Object.keys(TTStext_ready).length ? Object.keys(TTStext_ready).length - 1 : TTScurrent;
+		document.querySelectorAll('[data-ttstextid]').forEach(function (e) {e.classList.remove('tts-reading');});
+		document.querySelector('[data-ttstextid="' + Object.values(TTStext_ready)[TTScurrent]['ttsid'] + '"]').classList.add('tts-reading');
+		document.querySelector('button#tts-play').classList.remove('active');
+		document.querySelector('button#tts-prev').classList.remove('active');
+		document.querySelector('button#tts-cancel').classList.remove('active');
+		doScrolling('[data-ttstextid="' + Object.values(TTStext_ready)[TTScurrent]['ttsid'] + '"]', 1000);
+		if(nothingspoken) {
+			runSpeak();
+		}
+	}
+
+	function runSpeakPrev() {
+
+		TTSsubcur = 0;
+		subpartEnd = false;
+		TTSselchecked = true;
+		document.querySelector('button#tts-prev').classList.add('active');
+		TTSbutton = 'prev';
+		// get current ttsid
+		let tmp_id = Object.values(TTStext_ready)[TTScurrent]['ttsid'];
+		//get lowest index of current ttsid
+		let tmp_ind = Object.values(TTStext_ready).findIndex(item => item.ttsid == tmp_id);
+		if (tmp_ind > 0) {
+			// get index below that
+			tmp_ind -= 1;
+			// check ttsid for that index
+			tmp_id = Object.values(TTStext_ready)[tmp_ind]['ttsid'];
+			// get lowes index value for that ttsid
+			TTScurrent = Object.values(TTStext_ready).findIndex(item => item.ttsid == tmp_id);
+		} else {
+			TTScurrent = 0;
+		}
+		
+		
+		TTSsynth.cancel();
+		
+		TTScurrent = TTScurrent < 0 ? 0 : TTScurrent;
+		document.querySelectorAll('[data-ttstextid]').forEach(function (e) {
+			e.classList.remove('tts-reading');
+		});
+		
+		document.querySelector('[data-ttstextid="' + Object.values(TTStext_ready)[TTScurrent]['ttsid'] + '"]').classList.add('tts-reading');
+		document.querySelector('button#tts-play').classList.remove('active');
+		document.querySelector('button#tts-next').classList.remove('active');
+		document.querySelector('button#tts-cancel').classList.remove('active');
+		doScrolling('[data-ttstextid="' + Object.values(TTStext_ready)[TTScurrent]['ttsid'] + '"]', 1000);
+		if(nothingspoken) {
+			runSpeak();
+		}
+	}
+
+	function runSpeakCancel() {
+		document.querySelector('button#tts-cancel').classList.add('active');
+		TTSbutton = 'cancel';
+		TTSsynth.cancel();
+		TTScancel = true;
+		TTScurrent = 0;
+		TTSselchecked = false;
+		TTSpaused = false;
+		
+		TTSsubcur = 0;
+		TTSselchecked = false;
+
+		document.querySelectorAll('[data-ttstextid]').forEach(function (e) {
+			e.classList.remove('tts-reading');
+		});
+		
+		$('div[data-app="ttsreader"] [data-type="playpanel"]').addClass('ttshid');
+		$('div[data-app="ttsreader"] [data-type="setpanel"]').addClass('ttshid');
+		$('div[data-app="ttsreader"] button[data-action="activate"]').removeClass('ttshid');
+		document.querySelector('button#tts-play').classList.remove('active');
+		document.querySelector('button#tts-prev').classList.remove('active');
+		document.querySelector('button#tts-next').classList.remove('active');
+		document.querySelector('button#tts-pause').classList.remove('active');
+		document.querySelector('button#tts-cancel').classList.remove('active');
+		document.querySelector('button#tts-settings').classList.remove('active');
+	}
+
+	function speak() {
+		nothingspoken = false;
+		TTScancel = false;
+		utterThis = null;
+		
+		if (TTSsynth.speaking) {
+			if (TTSpaused) {
+				TTSsynth.resume();
+				TTSpaused = false;
+			}
+			return;
+		}
+		TTSpaused = false;
+
+		document.querySelectorAll('[data-ttstextid]').forEach(function (e) {
+			e.classList.remove('tts-reading');
+		});
+		
+		document.querySelector('button#tts-play').classList.add('active');
+		document.querySelector('[data-app="ttsreader"] #tts-pause > span').textContent = 'Pause';
+		document.querySelector('[data-app="ttsreader"] #tts-pause').classList.remove('active');
+		document.querySelector('[data-app="ttsreader"] #tts-next').classList.remove('active');
+		document.querySelector('[data-app="ttsreader"] #tts-prev').classList.remove('active');
+		document.querySelector('[data-app="ttsreader"] #tts-cancel').classList.remove('active');
+
+		TTScurrent = TTScurrent < 0 ? 0 : TTScurrent;
+		// stop after last!
+		if (TTScurrent >= Object.keys(TTStext_ready).length) {
+			runSpeakCancel();
+			
+			if (trackEvent) {
+				trackEvent.event("link", {"lpos": "ttsreader","lid": "tts-end","linktext": "Page end"});
+			}
+			return;
+		}
+
+		if (TTScurrent < TTStext_ready.length) {
+			var TTScurel = document.querySelector('[data-ttstextid="' + Object.values(TTStext_ready)[TTScurrent]['ttsid'] + '"]');
+			TTScurel.classList.add('tts-reading');
+
+			utterThis = new SpeechSynthesisUtterance();
+			utterThis.onerror = function (event) {
+				console.error('TTSsynth.onerror');
+				console.error(event);
+			};
+
+			var selectedOption = TTSvoiceSelect.selectedOptions[0].getAttribute('data-name');
+			
+			for (i = 0; i < TTSvoices.length; i++) {
+				if (TTSvoices[i].name === selectedOption) {
+					utterThis.voice = TTSvoices[i];
+					break;
+				}
+			}
+			
+			utterThis.pitch = TTSpitch.value;
+			utterThis.rate = TTSrate.value;
+			utterThis.onend = function (event) {
+				afterEnd();
+			};
+			
+			TTSsubpart = false;
+			utterThis.text = Object.values(TTStext_ready)[TTScurrent]['text'];
+			TTSsynth.speak(utterThis);
+		
+			doScrolling('[data-ttstextid="' + Object.values(TTStext_ready)[TTScurrent]['ttsid'] + '"]', 1000);
+		}
+	}
+
+	if (TTSsynth.onvoiceschanged !== undefined) {
+		TTSsynth.onvoiceschanged = populateVoiceList;
+	}
+
+
+	TTSinputForm.onsubmit = function (event) {
+		event.preventDefault();
+		TTSinputForm.querySelector('#tts-save').classList.add('active');
+		TTSinputForm.querySelector('#tts-cancel').classList.remove('active');
+
+		TTSsettings.pitch = TTSpitch.value;
+		TTSsettings.rate = TTSrate.value;
+		
+		TTSsettings.voice = TTSvoiceSelect.value.replace(" -- DEFAULT", "");
+		saveSettings();
+		
+		$('div[data-app="ttsreader"] [data-type="setpanel"]').addClass('ttshid');
+
+	};
+
+	TTSinputForm.onreset = function (event) {
+		TTSbutton = 'reset';
+		
+		TTSinputForm.querySelector('#tts-cancel').classList.add('active');
+		TTSinputForm.querySelector('#tts-save').classList.remove('active');
+		TTSsynth.cancel();
+		TTScancel = true;
+		document.querySelectorAll('[data-ttstextid]').forEach(function (e) {
+			e.classList.remove('tts-reading');
+		});
+		TTScurrent = 0;
+		TTSselchecked = false;
+		TTSpaused = false;
+		TTSpitchValue.textContent = '1';
+		TTSrateValue.textContent = '1';
+		TTSsettings.rate = 1;
+		TTSsettings.pitch = 1;
+		
+		TTSnumbers.checked = false;
+		TTSsettings.voice = null;
+		removeSettings();
+		
+		document.querySelector('button#tts-play').classList.remove('active');
+	};
+
+	TTSpitch.onchange = function () {
+		TTSpitchValue.textContent = TTSpitch.value;
+		
+		if (trackEvent) {
+			trackEvent.event("link", {"lpos": "ttsreader","lid": "tts-pitch","linktext": "Pitch: " + TTSpitch.value});
+		}
+	};
+	TTSpitch.oninput = function () {
+		TTSpitchValue.textContent = TTSpitch.value;
+	};
+
+	TTSrate.onchange = function () {
+		TTSrateValue.textContent = TTSrate.value;
+
+		if (trackEvent) {
+			trackEvent.event("link", {"lpos": "ttsreader","lid": "tts-rate","linktext": "Rate: " + TTSrate.value});
+		}
+	};
+	TTSrate.oninput = function () {
+		TTSrateValue.textContent = TTSrate.value;
+	};
+
+	TTSvoiceSelect.onchange = function () {		
+		TTSbutton = 'play';
+		if (trackEvent) {
+			trackEvent.event("link", {"lpos": "ttsreader","lid": "tts-voice","linktext": "Voice: " + TTSvoiceSelect.value});
+		}
+	};
+
+	document.querySelector('button#tts-prev').addEventListener('click', function(event) {
+		runSpeakPrev();
+	});
+	
+	document.querySelector('button#tts-play').addEventListener('click', function(event) {
+		if (TTSfirstplay) {
+			if (trackEvent) {
+				trackEvent.event("link", {"lpos": "ttsreader","lid": "tts-play","linktext": "play first"});
+			}
+			TTSfirstplay = false;
+		}
+		runSpeak();
+	});
+	document.querySelector('button#tts-next').addEventListener('click', function(event) {
+		runSpeakNext();
+	});
+	document.querySelector('button#tts-pause').addEventListener('click', function(event) {
+		runSpeakPauseResume();
+	});
+	document.querySelector('button#tts-cancel').addEventListener('click', function(event) {
+		runSpeakCancel();
+	});
+	
+	$('div[data-app="ttsreader"]').removeClass('ttshid');
+
+	$('div[data-app="ttsreader"] button[data-action="activate"]').on('click', function () {
+		$(this).addClass('ttshid');
+		$('div[data-app="ttsreader"] [data-type="playpanel"]').removeClass('ttshid');
+	});	
+
+	$('div[data-app="ttsreader"] [data-type="setpanel"] button[data-action="close"]').on('click', function () {
+		$('div[data-app="ttsreader"] [data-type="setpanel"]').addClass('ttshid');
+		document.querySelector('button#tts-settings').classList.remove('active');
+	});
+
+	$('div[data-app="ttsreader"] button#tts-settings').on('click', function () {
+		if ($('div[data-app="ttsreader"] [data-type="setpanel"]').hasClass('ttshid')) {
+			$('div[data-app="ttsreader"] [data-type="setpanel"]').removeClass('ttshid');
+			document.querySelector('button#tts-settings').classList.add('active');
+		} else {
+			//$('div[data-app="ttsreader"] [data-type="setpanel"]').hide();
+		}
+		
+	});
+
+	$('div[data-app="ttsreader"] [data-type="playpanel"] button[data-action="close"]').on('click', function () {
+		runSpeakCancel();
+		
+		$('div[data-app="ttsreader"] [data-type="playpanel"]').addClass('ttshid');
+		$('div[data-app="ttsreader"] [data-type="setpanel"]').addClass('ttshid');
+		$('div[data-app="ttsreader"] button[data-action="activate"]').removeClass('ttshid');
+		document.querySelector('button#tts-play').classList.remove('active');
+		document.querySelector('button#tts-settings').classList.remove('active');
+	});
+
+	$('div[data-app="ttsreader"] .voice .icon-help-alt').on('mouseenter', function(e) {
+		var pos = $(this).position();
+		var wid = $(this).closest('.selgroup').find('div.tooltip').width();
+		var hei = $(this).closest('.selgroup').find('div.tooltip').height();
+		$(this).closest('.selgroup').find('div.tooltip').css('top', (pos.top - hei) - 16 + 'px').css('left', (pos.left - wid) + 'px').fadeIn();
+	});
+	$('div[data-app="ttsreader"] .voice .icon-help-alt').on('mouseleave', function(e) {
+		$(this).closest('.selgroup').find('div.tooltip').fadeOut();
+	});
+	
+	console.log('TTS - finished - assign other functions took ' + (window.performance.now() - TTSperformance) + 'ms');
+
+	if ($(window).width() > 768) {
+		if ($('.pin-wrapper .sidebar-social .share-icons').length > 0){
+			$('[data-app="ttsreader"]').css('left', $('.pin-wrapper .sidebar-social .share-icons').offset().left + 'px');
+			$('[data-app="ttsreader"]').css('top', $('.pin-wrapper').offset().top + 150);
+			$(document).on('scroll', function(){
+				if ($('.pin-wrapper .sidebar-social.is-scrolling').length > 0){
+					$('[data-app="ttsreader"]').css('top', $('.pin-wrapper').offset().top + 50);
+				} else {
+					$('[data-app="ttsreader"]').css('top', $('.pin-wrapper').offset().top + 150);
+				}
+			});
+		} else {			
+			$('[data-app="ttsreader"]').css('left', $('body').offset().left + 16 + 'px');
+			$(document).on('scroll', function(){
+				if ($(window).scrollTop() > $('#fwt-masthead').offset().top + $('#fwt-masthead').height()){
+					$('[data-app="ttsreader"]').css('top', '16px');
+				} else {
+					$('[data-app="ttsreader"]').css('top', '218px');
+				}
+			});
+		}
+	} else {
+		$('[data-type="playpanel"]').removeClass('vertical');
+		if ($('body#wcq').length > 0){
+			$(document).on('scroll', function(){
+				if ($(window).scrollTop() > $('#fwt-masthead').offset().top + $('#fwt-masthead').height()){
+					$('[data-app="ttsreader"]').css('top', '16px');
+				} else {
+					$('[data-app="ttsreader"]').css('top', '210px');
+				}
+			});
+		}
+	}
+
+
+});

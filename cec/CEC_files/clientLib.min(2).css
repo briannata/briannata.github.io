@@ -1,0 +1,49 @@
+.dmc-emphasis{width:100%;display:inline-block;padding:0}
+.dm0.dmc-emphasis .dmr *{color:inherit}
+.dm0.dmc-emphasis.pal-1 .dmr{color:#4d4c4c}
+.dm0.dmc-emphasis.pal-2 .dmr{color:#fff}
+.dm0.dmc-emphasis.pal-3 .dmr{color:#014468}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-1{border:1px solid #0d98be;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-1:hover{border:1px solid #0a7998;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-1:active{border:1px solid #075b71;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-1:focus{border:1px solid #0d98be;color:#fff}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-2{border:1px solid #6ebe4a;color:#014468}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-2:hover{border:1px solid #7cc45c;color:#014468}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-2:active{border:1px solid #8bcb6e;color:#014468}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-2:focus{border:1px solid #6ebe4a;color:#014468}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-3{border:1px solid #4d4c4c;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-3:hover{border:1px solid #393838;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-3:active{border:1px solid #1e1e1e;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-3:focus{border:1px solid #4d4c4c;box-shadow:0 0 8px 0 #005073;color:#fff}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-4{border:1px solid #fff;color:#4d4c4c}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-4:hover{border:1px solid #e6e6e6;color:#4d4c4c}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-4:active{border:1px solid #b3b3b3;color:#4d4c4c}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-4:focus{border:1px solid #fff;box-shadow:0 0 8px 0 #fff;color:#4d4c4c}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-5{border:1px solid #005073;color:#005073}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-5:hover{border:1px solid #0a7998;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-5:active{border:1px solid #075b71;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-5:focus{border:1px solid #005073;box-shadow:0 0 8px 0 #005073;color:#005073}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-6{border:1px solid #fff;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-6:hover{border:1px solid #e6e6e6;color:#4d4c4c}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-6:active{border:1px solid #b3b3b3;color:#4d4c4c}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-6:focus{border:1px solid #fff;box-shadow:0 0 8px 0 #fff;color:#fff}
+.dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-7{border:1px solid #005073;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-7:hover{border:1px solid #00405c;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-7:active{border:1px solid #075b71;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr .dmc-button.atlantic.pal-7:focus{border:1px solid #005073;box-shadow:0 0 8px 0 #005073;color:#fff}
+.no-touch .dm0.dmc-emphasis .dmr a.text-cta:hover{border-bottom:1px solid #005073}
+.no-touch .dm0.dmc-emphasis .dmr a.text-cta:active{border-bottom:1px solid #6f53bc}
+.no-touch .dm0.dmc-emphasis.pal-2 .dmr .text-cta:hover,.no-touch .dm0.dmc-emphasis.pal-2 .dmr .text-cta:active{border-bottom:1px solid #fff}
+.no-touch .dm0.dmc-emphasis.pal-3 .dmr .text-cta:hover,.no-touch .dm0.dmc-emphasis.pal-3 .dmr .text-cta:active{border-bottom:1px solid #014468}
+.dm0.dmc-emphasis.pal-1 .dmr .play-cta{border:0}
+.dm0.dmc-emphasis.pal-1 .dmr .play-cta .text{color:#fff}
+.dm0.dmc-emphasis.pal-2 .dmr .play-cta{background-color:#fff}
+.dm0.dmc-emphasis.pal-2 .dmr .play-cta path{fill:#4d4c4c}
+.dm0.dmc-emphasis.pal-2 .dmr .play-cta .text{color:#4d4c4c}
+.no-touch .dm0.dmc-emphasis.pal-2 .dmr .play-cta:hover{background-color:#e6e6e6}
+.no-touch .dm0.dmc-emphasis.pal-2 .dmr .play-cta:active{background-color:#b3b3b3}
+.dm0.dmc-emphasis.pal-3 .dmr .play-cta{background-color:#005073}
+.dm0.dmc-emphasis.pal-3 .dmr .play-cta path{fill:#fff}
+.dm0.dmc-emphasis.pal-3 .dmr .play-cta .text{color:#fff}
+.no-touch .dm0.dmc-emphasis.pal-3 .dmr .play-cta:hover{background-color:#00405c}
+.no-touch .dm0.dmc-emphasis.pal-3 .dmr .play-cta:active{background-color:#057b71}

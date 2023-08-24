@@ -1,0 +1,47 @@
+div[data-app="ttsreader"]:hover {
+    opacity: 0.8 !important;
+}
+
+div.share-btn-wrapper {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+a.share-btn {
+    display: flex;
+    background: #017cad;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    padding: 0 30px;
+    border-radius: 2rem;
+    font-family: Arial, sans-serif;
+    line-height: 28px !important;
+    white-space: break-spaces;
+    text-align: center;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400 !important;
+    height: 40px;
+    max-width: 300px;
+    min-width: 0;
+    font-size: 14px;
+    outline: none;
+}
+
+div[data-app="ttsreader"] button#tts-read-aloud:hover,
+a.share-btn:hover {
+    box-shadow: 0 0 0 0 transparent;
+    background-color: #016a94;
+    color: #ffffff;
+    opacity: 1;
+}
+
+@media (max-width: 430px) {
+    a.share-btn {
+        font-size: 14px !important;
+        line-height: 18px !important;
+        height: 32px !important;
+        padding: 0 16px !important;
+    }
+}

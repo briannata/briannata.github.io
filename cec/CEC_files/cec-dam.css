@@ -1,0 +1,100 @@
+/** Please edit the Sass file, css version is updated automatically and any direct changes will be overwritten **/
+/** base **/
+.stockpagediv { font-family: HelveticaNeue-Light, 'Helvetica Neue Light', HelveticaNeueLight, HelveticaNeue, Helvetica, Arial, 'Nimbus Sans L', sans-serif; border-bottom: 1px solid #CCCCCC; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; margin-bottom: 40px; margin-top: 20px; }
+.stockpagediv .stockpagedata { display: inline-block; width: 100%; padding-bottom: 30px; }
+.stockpagediv .stockpagedata .label { display: inline-block; font-weight: bold; font-size: .875em; padding-right: 5px; }
+.stockpagediv .stockpagedata .value { font-size: .75em; }
+.stockpagediv .stockpagedata .value a { font-weight: bold; }
+.stockpagediv .stockpagedata .neg { color: red; }
+.stockpagediv .stockpagedata .pos { color: #32c20a; }
+.stockpagediv .stockpagedata .posarrow { width: 0; height: 0; text-indent: -9999px; border-right: 7px solid transparent; border-bottom: 7px solid #32c20a; border-left: 7px solid transparent; position: relative; bottom: 10px; }
+.stockpagediv .stockpagedata .negarrow { width: 0; height: 0; text-indent: -9999px; border-right: 7px solid transparent; border-top: 7px solid red; border-left: 7px solid transparent; position: relative; bottom: -9px; }
+
+.stockcontentdiv { line-height: 1.4em; font-size: .875em; padding-bottom: 10px; border-bottom: 1px solid #CCCCCC; margin-bottom: 40px; }
+.stockcontentdiv h1 { padding-bottom: 20px; }
+.stockcontentdiv p { padding-bottom: 20px; }
+.stockcontentdiv ul { padding-bottom: 20px; }
+.stockcontentdiv ul li { list-style-type: disc; list-style-position: inside; }
+.stockcontentdiv.noborder { border-bottom: none; }
+
+//body #cec-utility-links { width: 30%; }
+
+body #search-drop-down, body #search-drop-down div { display: none; visibility: hidden; }
+
+/** My Links integration with bookmarks **/
+.bookmark_child{padding-left: 10px;}
+div#hinavResponsive ul.myLinksMain li.myLinksHeaderAdminFolders_open{
+	background-image: url(../i/sprite_folder.png);
+    background-repeat: no-repeat;
+    background-position: 15px -52px;
+    padding-left: 38px;
+    height: 22px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+div#hinavResponsive ul.myLinksMain li.myLinksHeaderAdminFolders_closed{
+	background-image: url(../i/sprite_folder.png);
+    background-repeat: no-repeat;
+    background-position: 15px -79px;
+    padding-left: 38px;
+    height: 22px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+div#hinavResponsive ul.myLinksMain li.myLinksHeaderUserBookmarks_open{
+	background-image: url(../i/sprite_folder.png);
+    background-repeat: no-repeat;
+    background-position: 15px 8px;
+    padding-left: 38px;
+    height: 22px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+div#hinavResponsive ul.myLinksMain li.myLinksHeaderUserBookmarks_closed{
+	background-image: url(../i/sprite_folder.png);
+    background-repeat: no-repeat;
+    background-position: 15px -21px;
+    padding-left: 38px;
+    height: 22px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+div#hinavResponsive.active ul.outer{
+	border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+
+}
+#hinavResponsive ul li a {
+	border-left: none;
+    border-right: none;
+}
+#hinavResponsive li.cecmylinksButton .subhead{
+	border-left: none;
+    border-right: none;
+}
+#hinavResponsive li.cecmylinksButton ul li li.myLinksTitle {
+	border-left: none;
+    border-right: none;
+}
+/** xsmall **/
+/** small **/
+@media screen and (min-width: 600px) { .stockpagediv { border: 1px solid #CCCCCC; padding: 20px; font-family: HelveticaNeue-Light, 'Helvetica Neue Light', HelveticaNeueLight, HelveticaNeue, Helvetica, Arial, 'Nimbus Sans L', sans-serif; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; margin-bottom: 40px; }
+  .stockpagediv .stockpagedata { display: inline-block; width: 25%; }
+  .stockpagediv .stockpagedata:nth-child(5), .stockpagediv .stockpagedata:nth-child(6), .stockpagediv .stockpagedata:nth-child(7), .stockpagediv .stockpagedata:nth-child(8) { padding-bottom: 0px; }
+  .stockpagediv .stockpagedata .label { display: block; font-weight: bold; font-size: .875em; padding-bottom: 12px; }
+  .stockpagediv .stockpagedata .value { display: block; font-size: .75em; }
+  .stockpagediv .stockpagedata .value a { font-weight: bold; }
+  .stockcontentdiv { border-bottom: none; margin-bottom: 40px; } }
+/** medium **/
+/** large **/
+@media screen and (min-width: 960px) { .stockpagediv { font-family: HelveticaNeue-Light, 'Helvetica Neue Light', HelveticaNeueLight, HelveticaNeue, Helvetica, Arial, 'Nimbus Sans L', sans-serif; border: 1px solid #CCCCCC; padding: 20px; margin-bottom: 40px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; }
+  .stockpagediv .stockpagedata { display: inline-block; padding-bottom: 0px; width: 12.5%; }
+  .stockpagediv .stockpagedata .label { display: block; font-weight: bold; font-size: .875em; padding-bottom: 12px; }
+  .stockpagediv .stockpagedata .value { display: block; font-size: .75em; }
+  .stockpagediv .stockpagedata .value a { font-weight: bold; }
+/** xlarge **/
+
+.cec-overlay-icon, .cec-overlay-icon-v, .cec-overlay-icon-h, .cec-twitter-box, .social-feed-header, .twitter-feed-close, .tweet-container, .cec-dir-searchbox, .cec-footer-icons, #cec-diroverlay-icon .cecDirectoryContainer, .cecDirectoryIcon, #cec-twitter-icon .cecTwitterContainer, .cecTwitterIcon {
+  z-index: 999999 !important;
+}

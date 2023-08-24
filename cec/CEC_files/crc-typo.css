@@ -1,0 +1,134 @@
+
+/*!* CRC Responsive Text Definitions v1 */
+.crc h1, .crc h2, .crc h3, .crc h4, .crc h5, .crc h6, .crc h4.bold, .crc h5.bold, .crc p, .crc p.intro, .crc p.util, .crc li, .crc dt { font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', HelveticaNeueLight, HelveticaNeue, Helvetica, Arial, 'Nimbus Sans L', sans-serif; }
+
+@media screen and (min-width: 600px)/*Small - XL*/
+{
+.crc h1 { font-size: 32px; color: #444444; font-weight:lighter; line-height: 1.25em; margin-bottom: 15px;  }
+.crc h2 { font-size: 27px; color: #444444; font-weight:lighter; line-height: 1.25em; margin-bottom: 25px; margin-top:35px !important; }
+.crc h3 { font-size: 22px; color: #444444; font-weight:lighter; line-height: 1.25em; margin-bottom: 11px !important; }
+.crc h4 { font-size: 18px; color: #444444; font-weight: normal; line-height: 1.25em; margin-bottom: 13px; }    
+}
+
+@media screen and (max-width: 599px)/*Base - XS*/
+{
+.crc h1 { font-size: 27px; color: #444444; font-weight:lighter; line-height: 1.25em; margin-bottom: 15px;  }
+.crc h2 { font-size: 24px; color: #444444; font-weight:lighter; line-height: 1.25em; margin-bottom: 25px; margin-top:35px !important; }
+.crc h3 { font-size: 20px; color: #444444; font-weight:lighter; line-height: 1.25em; margin-bottom: 11px !important; }
+.crc h4 { font-size: 17px; color: #444444; font-weight: normal; line-height: 1.25em; margin-bottom: 13px; }
+}
+
+
+.crc h5 { font-size: 15px; color: #444444; line-height: 1.25em; margin-bottom: 13px; }
+.crc h6 { font-size: 14px; font-weight: bold; font-style: italic; color: #767676; line-height: 1.25em; margin-bottom: 12px; }
+.crc h4.bold, .crc h5.bold { font-weight: bold; color: #767676; margin-bottom: 13px; }
+.crc h2.light, .crc h3.light, .crc h4.light, .crc h5.light { font-weight: lighter !important; font-weight: light !important; }
+.crc p { font-size: 14px; color: #525252; line-height: 1.44em; margin-bottom: 20px !important; }
+.crc p.intro { font-size: 16px; color: #525252; line-height: 1.44em; margin-bottom: 20px; }
+.crc p.util { font-size: 12px; color: #525252; line-height: 1.44em; margin-bottom: 20px; }
+.crc ul, .crc ol { font-size: 14px; color: #525252; line-height: 1.25em; margin-bottom: 10px; }
+.crc ul { list-style-type: disc; }
+.crc ul.no-bullets { list-style-type: none; margin-left: 0px; padding-left: 0px; margin-bottom: 16px; margin-top:2px !important; }
+.crc ol { list-style-type: decimal; }
+.crc ul li { font-size: 14px; color: #525252; margin-left: 20px; font-size: 14px; }
+.crc ul.no-bullets li { font-size: 14px; color: #525252; margin-left: 0px; padding-left: 0px; margin-bottom: 11px !important; }
+.crc ol li { font-size: 14px; color: #525252; margin-left: 20px; font-size: 14px; }
+.crc dt { clear: left; float: left; margin-right: 6px; font-color: #444444; }
+.crc dd { margin-bottom: 14px; }
+.crc a:link { color: #007fc5; font-weight: normal; }
+.crc a:visited { color: #007fc5; font-weight: normal; }
+.crc span.bracket {color: #525252;}
+.crc hr { height:1px; border:none; color:#ccc; background-color:#ccc; width:100%; text-align:center; margin-top: 26px; margin-bottom: 30px; }
+
+
+
+/*Show-Hide*/
+.crc .hideInBase, .crc .hideInX-Small, .crc .hideInSmall, .crc .hideInMedium, .crc .hideInLarge, .crc .hideInX-Large { display: block }
+.crc .showInBase, .crc .showInX-Small, .crc .showInSmall, .crc .showInMedium, .crc .showInLarge, .crc .showInX-Large { display: none }
+@media only screen and (max-width:479px) {
+.hideInBase { display: none!important }
+.showInBase { display: block!important }
+}
+@media only screen and (min-width:480px) and (max-width:599px) {
+.hideInX-Small { display: none!important }
+.showInX-Small { display: block!important }
+}
+@media only screen and (min-width:600px) and (max-width:767px) {
+.hideInSmall { display: none!important }
+.showInSmall { display: block!important }
+}
+@media only screen and (min-width:768px) and (max-width:939px) {
+.hideInMedium { display: none!important }
+.showInMedium { display: block!important }
+}
+@media only screen and (min-width:940px) and (max-width:1023px) {
+.hideInLarge { display: none!important }
+.showInLarge { display: block!important }
+}
+@media only screen and (min-width:1024px) {
+.hideInX-Large { display: none!important }
+.showInX-Large { display: block!important }
+}
+/*Show-Hide*/
+
+
+
+/*LIST*/
+.crc ul li, .crc ol li { font-family: "Helvetica Neue", HelveticaNeue, Helvetica, Arial, "Nimbus Sans L", sans-serif; font-size: 14px !important; line-height: 1.25em !important; }
+.crc ul, .crc ol { margin-bottom: 10px }
+.crc ul li, .crc ol li { margin-bottom: 10px }
+.crc ul.bulleted, .crc ol.bulleted { list-style: disc; padding-left: 0 }
+.crc ul.no-bullets, .crc ol.no-bullets { margin-left: 0; padding-left: 0 }
+.crc ul.no-bullets li, .crc ol.no-bullets li { list-style: none; margin-left: 0; padding-left: 0; margin-bottom: 11px !important; }
+/*LIST*/
+
+/*CEC ICONS*/
+.crc .autoIconNew { padding: 0 0 0 32px; background: url('http://wwin.cisco.com/cec/common/i/icon_new.gif') -300px 0 no-repeat; overflow: hidden; display: inline; }
+.crc .autoIconUpdated { padding: 0 0 0 50px; background: url('http://wwin.cisco.com/cec/common/i/icon_updated.gif') -300px 0 no-repeat; overflow: hidden; display: inline; }
+.crc .autoIconNew { padding-right: 32px; background: url('http://wwin.cisco.com/cec/common/i/icon_new.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconUpdated { padding-right: 50px; background: url('http://wwin.cisco.com/cec/common/i/icon_updated.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconAI { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_ai.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconAUDIO { padding-right: 13px; background: url('http://wwin.cisco.com/cec/common/i//icon_audio.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconCLASSROOM { padding-right: 21px; background: url('http://wwin.cisco.com/cec/common/i/icon_classroom.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconCCW { padding-right: 22px; background: url('http://wwin.cisco.com/cec/common/i/icon_ccw.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconDOC { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_doc.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconDISCUSS { padding-right: 13px; background: url('http://wwin.cisco.com/cec/common/i/icon_discuss.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconEDCS { padding-right: 22px; background: url('http://wwin.cisco.com/cec/common/i/icon_edcs.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconEMAIL { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/icon_email.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconENLARGE, .crc .autoComponentENLARGE { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/icon_enlarge.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconENTITLED { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_entitled.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconEXPLORER { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_explorer.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconGLOSSARY { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_glossary.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconLOCK { padding-right: 18px; background: url('/c/dam/cec/cec/components/images/icon_lock.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconMPP { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_mpp.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconMEDIA, A.flash SPAN.caption { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/icon_medi.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconINDD { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_indd.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconONE { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_one.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconOFFSITE { padding-right: 22px; background: url('http://wwin.cisco.com/cec/common/i/icon_offsite.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconOFT { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_oft.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconPAPER { padding-right: 16px; background: url('http://wwin.cisco.com/cec/common/i/icon_paper.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconPDF {padding-right: 15px; background: url('http://wwin.cisco.com/cec/common/i/icon_pdf.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconPOPUP, .crc .autoComponentPOPUP { padding-right: 21px; background: url('http://wwin.cisco.com/cec/common/i/icon_popup.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconPPT { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_ppt.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconPS { padding-right: 16px; background: url('http://wwin.cisco.com/cec/common/i/icon_ps.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconPSD { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_psd.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconRSS { padding-right: 68px; background: url('http://wwin.cisco.com/cec/common/i/icon_rss.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconRSS_sm { padding-right: 21px; background: url('http://wwin.cisco.com/cec/common/i/icon_rss_sm.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconSLIDESHOW, .crc .autoComponentSLIDESHOW { padding-right: 21px; background: url('http://wwin.cisco.com/cec/common/i/icon_slideshow.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconVCF { padding-right: 23px; background: url('http://wwin.cisco.com/cec/common/i/icon_vcf.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconVSD { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_vsd.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconWEB { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/icon_web.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconXLS { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_xls.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconZIP { padding-right: 19px; background: url('http://wwin.cisco.com/cec/common/i/icon_zip.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconHELP, .crc .autoIconHELP { padding-right: 18px; background: url('http://wwin.cisco.com/cec/common/i/icon_help.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconHELP span.help { display: none; }
+.crc .autoIconFLAG-us { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_us.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-cn { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_cn.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-fr { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_fr.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-de { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_de.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-gb { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_gb.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-in { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_in.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-il { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_il.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-jp { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_jp.gif') right center no-repeat; zoom: 1; }
+.crc .autoIconFLAG-ru { padding-right: 20px; background: url('http://wwin.cisco.com/cec/common/i/flag/logo_ru.gif') right center no-repeat; zoom: 1; }
+/*CEC ICONS*/
