@@ -4,7 +4,6 @@
     var version = "v16/okta" // match the tag in repository, use this in cachebuster param in html
     logInfo("Version: " + version)
     var defaultOptions = {
-        appToken: "61aec226fd929-a433-d22d-d87eef485b27", // for identification (NOT authorization)
         ciscoNetworkProbeUrl: "https://ecd-internal.cisco.com/probe.json",
         onCiscoNetwork: true,
         configUrl: "/c/dam/cec/cec/zero-trust-monitor/zero-trust-monitor.json",
