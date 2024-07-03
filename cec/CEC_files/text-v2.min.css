@@ -1,9 +1,0 @@
-/*!* Responsive Text Component 2.0 v1.7 */.dmc-text.brad15{border-radius:15px}
-.dmc-text .clip{height:320px}
-.dmc-text :last-child{margin-bottom:0}
-@media only screen and (min-width:37.5em){.dmc-text .clip{height:160px}
-}
-@media only screen and (min-width:48em){.dmc-text .clip{height:185px}
-}
-@media only screen and (min-width:64em){.dmc-text .clip{height:340px}
-}

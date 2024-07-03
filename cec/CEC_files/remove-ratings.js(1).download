@@ -1,5 +1,0 @@
-(function() {
-    const styles = document.createElement("style");
-    styles.textContent = `.ratings-stars.ratings-stars-form, .ratings-stars.ratings-stars span.stars-small, .ratings-stars.ratings-stars .stars-small + span, .ratings-stars.ratings-stars .icon-comments + span { display: none; }`;
-    document.head.appendChild(styles);
-})();
