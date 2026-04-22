@@ -66,7 +66,7 @@ body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-
 /* ── MAIN ── */
 main{margin-left:var(--sw);margin-right:var(--rw);position:relative;z-index:1;}
 section{padding:120px clamp(70px,8vw,140px);max-width:1400px;}
-#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:0;}
+#home{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:0;}
 
 /* ── HERO ── */
 .hero-eyebrow{font-size:0.82rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent-light);margin-bottom:1rem;opacity:0;animation:fadeUp 0.8s 0.2s forwards;}
@@ -196,7 +196,7 @@ section{padding:120px clamp(70px,8vw,140px);max-width:1400px;}
   main{margin-left:0;margin-right:0;padding-top:60px;}
   .footer{margin-left:0;margin-right:0;padding:2rem 1.5rem;flex-direction:column;text-align:center;gap:0.75rem;}
   section{padding:80px 1.5rem;max-width:100%;}
-  #hero{padding-top:40px;}
+  #home{padding-top:40px;}
   .about-grid{grid-template-columns:1fr;gap:2.5rem;}
   .about-stats{flex-direction:row;flex-wrap:wrap;gap:1.5rem;}
   .stat-item{flex:1;min-width:140px;}
@@ -235,7 +235,7 @@ section{padding:120px clamp(70px,8vw,140px);max-width:1400px;}
 
 <!-- MOBILE HEADER -->
 <header class="mobile-header">
-  <a href="#hero" class="sl-logo">BT<span>.</span></a>
+  <a href="#home" class="sl-logo">BT<span>.</span></a>
   <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
     <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
   </button>
@@ -247,7 +247,7 @@ section{padding:120px clamp(70px,8vw,140px);max-width:1400px;}
     <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>
   <ul>
-    <li><a href="#hero" data-m="hero">Home</a></li>
+    <li><a href="#home" data-m="home">Home</a></li>
     <li><a href="#about" data-m="about">About</a></li>
     <li><a href="#experience" data-m="experience">Experience</a></li>
     <li><a href="#projects" data-m="projects">Projects</a></li>
@@ -269,9 +269,9 @@ section{padding:120px clamp(70px,8vw,140px);max-width:1400px;}
 
 <!-- LEFT SIDEBAR -->
 <nav class="sl" aria-label="Main navigation">
-  <a href="#hero" class="sl-logo">BT<span>.</span></a>
+  <a href="#home" class="sl-logo">BT<span>.</span></a>
   <ul class="nav-links">
-    <li><a href="#hero" data-s="hero"><span class="line"></span>Home</a></li>
+    <li><a href="#home" data-s="home"><span class="line"></span>Home</a></li>
     <li><a href="#about" data-s="about"><span class="line"></span>About</a></li>
     <li><a href="#experience" data-s="experience"><span class="line"></span>Experience</a></li>
     <li><a href="#projects" data-s="projects"><span class="line"></span>Projects</a></li>
@@ -297,7 +297,7 @@ section{padding:120px clamp(70px,8vw,140px);max-width:1400px;}
 <main>
 
 <!-- HERO -->
-<section id="hero">
+<section id="home">
   <div class="hero-eyebrow">Hello, I'm</div>
   <h1 class="hero-name"><span class="glitch-wrap" data-text="Brianna Ta">Brianna Ta</span></h1>
   <div class="hero-sub"><span class="tw-text" id="tw"></span><span class="cursor"></span></div>
