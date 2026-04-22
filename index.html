@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brianna Ta — Software Engineer</title>
+<meta name="description" content="Brianna Ta — Software Engineer & Data Scientist. Portfolio of projects, experience, and skills.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='system-ui' font-weight='800'%3E%F0%9F%92%9C%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810;
+  --surface: #0f0f1a;
+  --surface2: #13131f;
+  --border: rgba(139,92,246,0.15);
+  --accent: #8b5cf6;
+  --accent-light: #a78bfa;
+  --accent-glow: rgba(139,92,246,0.3);
+  --text: #f0eef8;
+  --text-muted: #8b8a9e;
+  --sw: 240px;
+  --rw: 68px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* ── SIDEBAR LEFT ── */
+.sl{position:fixed;left:0;top:0;bottom:0;width:var(--sw);display:flex;flex-direction:column;justify-content:center;padding:2rem 2.5rem;z-index:100;border-right:1px solid var(--border);background:rgba(8,8,16,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.sl-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);margin-bottom:3rem;letter-spacing:-0.02em;text-decoration:none;}
+.sl-logo span{color:var(--accent-light);}
+.nav-links{list-style:none;display:flex;flex-direction:column;gap:0.25rem;}
+.nav-links a{text-decoration:none;color:var(--text-muted);font-size:0.78rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;display:flex;align-items:center;gap:0.75rem;padding:0.55rem 0;transition:color 0.3s;}
+.nav-links a .line{display:inline-block;width:20px;height:1px;background:var(--text-muted);transition:width 0.35s,background 0.35s;flex-shrink:0;}
+.nav-links a.active,.nav-links a:hover{color:var(--accent-light);}
+.nav-links a.active .line,.nav-links a:hover .line{width:44px;background:var(--accent-light);}
+
+/* ── SIDEBAR RIGHT ── */
+.sr{position:fixed;right:0;top:0;bottom:0;width:var(--rw);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:1.5rem;padding-bottom:3rem;z-index:100;border-left:1px solid var(--border);}
+.sr::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1px;height:80px;background:linear-gradient(to top,var(--accent-light),transparent);}
+.social-link{color:var(--text-muted);text-decoration:none;transition:color 0.3s,transform 0.3s;display:flex;align-items:center;justify-content:center;}
+.social-link:hover{color:var(--accent-light);transform:translateY(-3px);}
+.social-link svg{width:18px;height:18px;fill:currentColor;}
+
+/* ── MOBILE HEADER ── */
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;height:60px;padding:0 1.25rem;align-items:center;justify-content:space-between;background:rgba(8,8,16,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;}
+.mobile-header .sl-logo{margin-bottom:0;font-size:1.15rem;}
+.menu-btn{background:transparent;border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s;padding:0;}
+.menu-btn:hover{border-color:var(--accent);color:var(--accent-light);}
+.menu-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+
+/* ── MOBILE NAV DRAWER ── */
+.mobile-nav{display:none;position:fixed;inset:0;z-index:200;background:rgba(8,8,16,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex-direction:column;padding:80px 2rem 2rem;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.mobile-nav.open{display:flex;opacity:1;pointer-events:auto;}
+.mobile-nav .close-btn{position:absolute;top:14px;right:1.25rem;background:transparent;border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+.mobile-nav .close-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+.mobile-nav ul{list-style:none;display:flex;flex-direction:column;gap:0.5rem;margin-bottom:3rem;}
+.mobile-nav ul a{display:block;text-decoration:none;color:var(--text-muted);font-size:1.4rem;font-family:'Syne',sans-serif;font-weight:600;padding:0.9rem 0;border-bottom:1px solid var(--border);letter-spacing:-0.01em;transition:color 0.25s;}
+.mobile-nav ul a:hover,.mobile-nav ul a.active{color:var(--accent-light);}
+.mobile-nav .mobile-socials{display:flex;gap:1.25rem;margin-top:auto;padding-top:2rem;}
+.mobile-nav .mobile-socials a{color:var(--text-muted);display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--border);border-radius:6px;transition:all 0.25s;}
+.mobile-nav .mobile-socials a:hover{color:var(--accent-light);border-color:var(--accent);}
+.mobile-nav .mobile-socials svg{width:18px;height:18px;fill:currentColor;}
+
+/* ── MAIN ── */
+main{margin-left:var(--sw);margin-right:var(--rw);position:relative;z-index:1;}
+section{padding:120px 70px;max-width:1000px;}
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:0;}
+
+/* ── HERO ── */
+.hero-eyebrow{font-size:0.82rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent-light);margin-bottom:1rem;opacity:0;animation:fadeUp 0.8s 0.2s forwards;}
+.hero-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3rem,7vw,6.5rem);line-height:1;letter-spacing:-0.03em;color:var(--text);opacity:0;animation:fadeUp 0.8s 0.4s forwards;position:relative;display:inline-block;}
+.hero-name .glitch-wrap{position:relative;display:inline-block;}
+.hero-name .glitch-wrap::before,.hero-name .glitch-wrap::after{content:attr(data-text);position:absolute;left:0;top:0;opacity:0;}
+.hero-name .glitch-wrap::before{color:#7c3aed;animation:glitch1 4s 2s infinite;}
+.hero-name .glitch-wrap::after{color:#c4b5fd;animation:glitch2 4s 2s infinite;}
+.hero-sub{font-family:'Syne',sans-serif;font-size:clamp(1.15rem,3vw,2.2rem);font-weight:600;color:var(--text-muted);margin-top:0.75rem;min-height:2.8rem;opacity:0;animation:fadeUp 0.8s 0.6s forwards;}
+.tw-text{color:var(--accent-light);}
+.cursor{display:inline-block;width:2px;height:0.9em;background:var(--accent-light);margin-left:3px;vertical-align:middle;animation:blink 1s infinite;}
+.hero-desc{max-width:480px;color:var(--text-muted);font-size:1rem;line-height:1.85;margin-top:2rem;opacity:0;animation:fadeUp 0.8s 0.8s forwards;}
+.hero-desc strong{color:var(--text);}
+.hero-cta{margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s 1s forwards;}
+.btn{padding:0.75rem 1.75rem;border-radius:4px;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;text-decoration:none;transition:all 0.3s;letter-spacing:0.04em;display:inline-block;}
+.btn-primary{background:var(--accent);color:#fff;border:1px solid var(--accent);}
+.btn-primary:hover{background:var(--accent-light);border-color:var(--accent-light);box-shadow:0 0 40px var(--accent-glow);}
+.btn-ghost{background:transparent;color:var(--accent-light);border:1px solid rgba(167,139,250,0.4);}
+.btn-ghost:hover{background:rgba(139,92,246,0.08);border-color:var(--accent-light);}
+
+/* ── SECTION HEADERS ── */
+.sec-label{font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-light);margin-bottom:0.6rem;display:flex;align-items:center;gap:1rem;}
+.sec-label::before{content:'';width:30px;height:1px;background:var(--accent-light);}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.75rem,4vw,2.8rem);font-weight:700;letter-spacing:-0.025em;margin-bottom:3.5rem;}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:5rem;align-items:start;}
+.about-text p{color:var(--text-muted);line-height:1.9;font-size:0.95rem;margin-bottom:1.1rem;}
+.about-text p strong{color:var(--text);}
+.about-stats{display:flex;flex-direction:column;gap:2rem;}
+.stat-item{border-left:2px solid var(--accent);padding-left:1.25rem;}
+.stat-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:700;color:var(--accent-light);line-height:1;}
+.stat-lbl{color:var(--text-muted);font-size:0.82rem;margin-top:0.3rem;line-height:1.4;}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:1.5rem;}
+.timeline::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:1px;background:var(--border);}
+.tl-item{padding-left:2rem;padding-bottom:3.5rem;position:relative;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{position:absolute;left:-4px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent-glow);}
+.tl-date{font-size:0.78rem;color:var(--accent-light);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;}
+.tl-role{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);}
+.tl-co{color:var(--text-muted);font-size:0.88rem;margin-bottom:0.9rem;margin-top:0.15rem;}
+.tl-bullets{list-style:none;display:flex;flex-direction:column;gap:0.45rem;}
+.tl-bullets li{color:var(--text-muted);font-size:0.88rem;line-height:1.65;padding-left:1.2rem;position:relative;}
+.tl-bullets li::before{content:'▸';position:absolute;left:0;color:var(--accent);font-size:0.72rem;top:0.1em;}
+
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;}
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.6rem;transition:border-color 0.3s,transform 0.35s,box-shadow 0.35s;display:flex;flex-direction:column;position:relative;overflow:hidden;cursor:default;}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);opacity:0;transition:opacity 0.3s;}
+.proj-card:hover{border-color:rgba(139,92,246,0.45);transform:translateY(-5px);box-shadow:0 24px 48px rgba(0,0,0,0.45),0 0 40px rgba(139,92,246,0.06);}
+.proj-card:hover::before{opacity:1;}
+.proj-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.7rem;gap:0.75rem;}
+.proj-icon{font-size:1.4rem;line-height:1;flex-shrink:0;}
+.proj-links-row{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:flex-end;}
+.proj-gh{color:var(--text-muted);text-decoration:none;font-size:0.78rem;display:flex;align-items:center;gap:0.35rem;transition:color 0.3s;white-space:nowrap;}
+.proj-gh:hover{color:var(--accent-light);}
+.proj-gh svg{width:14px;height:14px;fill:currentColor;}
+.award-badge{font-family:'Outfit',sans-serif;font-size:0.68rem;font-weight:500;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);border-radius:3px;padding:0.15rem 0.45rem;vertical-align:middle;margin-left:0.4rem;white-space:nowrap;display:inline-block;}
+.cert-tag{text-decoration:none;transition:all 0.25s;}
+.proj-name{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:0.45rem;}
+.proj-desc{color:var(--text-muted);font-size:0.84rem;line-height:1.7;flex:1;margin-bottom:1.1rem;}
+.proj-desc strong{color:var(--text);}
+.tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.tag{font-size:0.72rem;background:rgba(139,92,246,0.08);color:var(--accent-light);border:1px solid rgba(139,92,246,0.18);border-radius:3px;padding:0.18rem 0.55rem;letter-spacing:0.04em;}
+
+/* ── EDUCATION ── */
+.edu-cards{display:flex;flex-direction:column;gap:1.25rem;}
+.edu-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;transition:border-color 0.3s;flex-wrap:wrap;}
+.edu-card-col{flex-direction:column;align-items:stretch;}
+.edu-card:hover{border-color:rgba(139,92,246,0.35);}
+.edu-deg{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);}
+.edu-school{color:var(--accent-light);font-size:0.88rem;margin-top:0.3rem;}
+.edu-meta{color:var(--text-muted);font-size:0.82rem;margin-top:0.35rem;}
+.edu-courses{color:var(--text-muted);font-size:0.82rem;margin-top:0.5rem;line-height:1.6;}
+.edu-courses-label{color:var(--text);font-weight:500;margin-right:0.3rem;}
+.edu-yr{color:var(--text-muted);font-size:0.82rem;text-align:right;white-space:nowrap;flex-shrink:0;}
+.edu-activities{margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);width:100%;}
+.edu-act-label{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent-light);margin-bottom:0.75rem;font-weight:600;}
+.edu-act-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.edu-act-item{display:flex;flex-direction:column;gap:0.1rem;}
+.edu-act-role{font-size:0.82rem;color:var(--text);}
+.edu-act-org{font-size:0.78rem;color:var(--text-muted);}
+.edu-top{display:flex;justify-content:space-between;align-items:flex-start;width:100%;gap:1rem;flex-wrap:wrap;}
+
+/* ── SKILLS ── */
+.skills-groups{display:flex;flex-direction:column;gap:2.5rem;}
+.sg-label{font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-light);margin-bottom:0.9rem;font-weight:600;}
+.skill-tags{display:flex;flex-wrap:wrap;gap:0.55rem;}
+.skill-tag{padding:0.45rem 1.1rem;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text-muted);font-size:0.84rem;transition:all 0.25s;cursor:default;}
+.skill-tag:hover{border-color:var(--accent);color:var(--text);background:rgba(139,92,246,0.07);transform:translateY(-1px);}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.in{opacity:1;transform:none;}
+.reveal-delay-1{transition-delay:0.1s;}
+.reveal-delay-2{transition-delay:0.2s;}
+.reveal-delay-3{transition-delay:0.3s;}
+
+/* ── FOOTER ── */
+.footer{margin-left:var(--sw);margin-right:var(--rw);padding:2.5rem 70px;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:1;}
+.footer a{color:var(--accent-light);text-decoration:none;}
+.footer a:hover{color:var(--text);}
+
+/* ── KEYFRAMES ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes glitch1{0%,90%,100%{opacity:0;transform:none;}92%{opacity:0.7;transform:translate(-2px,1px) skewX(-3deg);}94%{opacity:0;}}
+@keyframes glitch2{0%,93%,100%{opacity:0;transform:none;}95%{opacity:0.5;transform:translate(2px,-1px) skewX(3deg);}97%{opacity:0;}}
+
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  section{padding:100px 50px;}
+  .footer{padding:2rem 50px;}
+  .about-grid{gap:3rem;}
+}
+
+@media (max-width: 900px) {
+  :root{--sw:0px;--rw:0px;}
+  .sl,.sr{display:none;}
+  .mobile-header{display:flex;}
+  main{margin-left:0;margin-right:0;padding-top:60px;}
+  .footer{margin-left:0;margin-right:0;padding:2rem 1.5rem;flex-direction:column;text-align:center;gap:0.75rem;}
+  section{padding:80px 1.5rem;max-width:100%;}
+  #hero{padding-top:40px;}
+  .about-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .about-stats{flex-direction:row;flex-wrap:wrap;gap:1.5rem;}
+  .stat-item{flex:1;min-width:140px;}
+  .proj-grid{grid-template-columns:1fr;gap:1rem;}
+  .edu-card{padding:1.5rem;}
+  .edu-act-grid{grid-template-columns:1fr;}
+  .sec-title{margin-bottom:2.5rem;}
+  .proj-head{flex-direction:column;align-items:flex-start;}
+  .proj-links-row{justify-content:flex-start;}
+}
+
+@media (max-width: 480px) {
+  section{padding:70px 1.25rem;}
+  .footer{padding:1.75rem 1.25rem;}
+  .hero-desc{font-size:0.95rem;}
+  .hero-cta{gap:0.75rem;}
+  .btn{padding:0.7rem 1.4rem;font-size:0.85rem;}
+  .about-stats{flex-direction:column;}
+  .stat-num{font-size:1.9rem;}
+  .timeline{padding-left:1rem;}
+  .tl-item{padding-left:1.5rem;padding-bottom:2.5rem;}
+  .edu-card{padding:1.25rem;}
+  .proj-card{padding:1.3rem;}
+  .skills-groups{gap:2rem;}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
+  html{scroll-behavior:auto;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- MOBILE HEADER -->
+<header class="mobile-header">
+  <a href="#hero" class="sl-logo">BT<span>.</span></a>
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+</header>
+
+<!-- MOBILE NAV DRAWER -->
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Navigation">
+  <button class="close-btn" id="closeBtn" aria-label="Close menu">
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <ul>
+    <li><a href="#hero" data-m="hero">Home</a></li>
+    <li><a href="#about" data-m="about">About</a></li>
+    <li><a href="#experience" data-m="experience">Experience</a></li>
+    <li><a href="#projects" data-m="projects">Projects</a></li>
+    <li><a href="#education" data-m="education">Education</a></li>
+    <li><a href="#skills" data-m="skills">Skills</a></li>
+  </ul>
+  <div class="mobile-socials">
+    <a href="mailto:brianna.hy.ta@gmail.com" aria-label="Email">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/in/briannata/" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="https://github.com/briannata" target="_blank" rel="noopener" aria-label="GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- LEFT SIDEBAR -->
+<nav class="sl" aria-label="Main navigation">
+  <a href="#hero" class="sl-logo">BT<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#hero" data-s="hero"><span class="line"></span>Home</a></li>
+    <li><a href="#about" data-s="about"><span class="line"></span>About</a></li>
+    <li><a href="#experience" data-s="experience"><span class="line"></span>Experience</a></li>
+    <li><a href="#projects" data-s="projects"><span class="line"></span>Projects</a></li>
+    <li><a href="#education" data-s="education"><span class="line"></span>Education</a></li>
+    <li><a href="#skills" data-s="skills"><span class="line"></span>Skills</a></li>
+  </ul>
+</nav>
+
+<!-- RIGHT SIDEBAR -->
+<div class="sr">
+  <a href="mailto:brianna.hy.ta@gmail.com" class="social-link" title="Email" aria-label="Email">
+    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </a>
+  <a href="https://www.linkedin.com/in/briannata/" target="_blank" rel="noopener" class="social-link" title="LinkedIn" aria-label="LinkedIn">
+    <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+  </a>
+  <a href="https://github.com/briannata" target="_blank" rel="noopener" class="social-link" title="GitHub" aria-label="GitHub">
+    <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+  </a>
+</div>
+
+<!-- MAIN -->
+<main>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">Hello, I'm</div>
+  <h1 class="hero-name"><span class="glitch-wrap" data-text="Brianna Ta">Brianna Ta</span></h1>
+  <div class="hero-sub"><span class="tw-text" id="tw"></span><span class="cursor"></span></div>
+  <p class="hero-desc">Software Engineer &amp; Data Scientist building meaningful products at the intersection of engineering and ML. Currently at <strong>IXL Learning</strong>, previously at <strong>Cisco</strong>.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="mailto:brianna.hy.ta@gmail.com" class="btn btn-ghost">Get in touch</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="sec-label">01 · About</p>
+    <h2 class="sec-title">Who I am</h2>
+  </div>
+  <div class="about-grid reveal reveal-delay-1">
+    <div class="about-text">
+      <p>I'm a <strong>software engineer and data scientist</strong> passionate about building products that are both technically rigorous and deeply human. I hold an <strong>MS in Data Science from Columbia University</strong> and a <strong>BS in Computer Science from UNC Chapel Hill</strong>.</p>
+      <p>I love working at the intersection of software engineering and machine learning — whether that's building accessible frontend components at scale, designing ML pipelines, or crafting interactive data visualizations.</p>
+      <p>From presenting at Cisco Live to 20,000+ attendees to shipping accessibility features for millions of students, I thrive in environments where my work has real impact.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-item">
+        <div class="stat-num">4+</div>
+        <div class="stat-lbl">Years of industry experience across 4 companies</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">12+</div>
+        <div class="stat-lbl">Projects in ML, data viz &amp; full-stack</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2</div>
+        <div class="stat-lbl">Degrees — MS Data Science &amp; BS CS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal">
+    <p class="sec-label">02 · Experience</p>
+    <h2 class="sec-title">Where I've worked</h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal reveal-delay-1">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Jul 2025 — Present</div>
+      <div class="tl-role">Software Engineer</div>
+      <div class="tl-co">IXL Learning</div>
+      <ul class="tl-bullets">
+        <li>Optimized slope field rendering performance by 80–90%, reducing load time from 25–30 seconds to ~3 seconds through deep investigation of the parser and shape render models</li>
+        <li>Led the color contrast accessibility initiative, architecting the CSS/JS infrastructure for a sitewide increased contrast toggle and implementing color changes across 10+ components (dropdowns, number lines, area models, draggable tiles, fill-ins)</li>
+        <li>Developed and shipped student-facing interactive math and science components in React and Java, including a new segmented bar graph component built from scratch with audio button accessibility support</li>
+        <li>Resolved a P1 grading bug in streak-scoring skills and identified an unreviewed merge request before it reached production, preventing a P0 release incident</li>
+        <li>Wrote Python and Node.js scripts to batch-resize and rename 1,300+ SVGs, coordinating with stakeholders on output format and documenting the workflow for future use</li>
+      </ul>
+    </div>
+    <div class="tl-item reveal reveal-delay-1">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 2022 — Jun 2025</div>
+      <div class="tl-role">Software Engineering Intern</div>
+      <div class="tl-co">Cisco</div>
+      <ul class="tl-bullets">
+        <li>Adopted Webex bots to send alert notifications for lab conditions, reducing equipment damage by 20%</li>
+        <li>Automated security report generation using Python for Cisco CyberVision</li>
+        <li>Developed JavaScript analytics dashboard monitoring facilities across 15 data centers including the US Navy</li>
+        <li>Managed and mentored the Cisco High 2022 Program with 140+ externs across 9 nationwide sites</li>
+        <li>Presented IoT Application Servers at Cisco Live to 20,000+ attendees</li>
+      </ul>
+    </div>
+    <div class="tl-item reveal reveal-delay-2">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Dec 2021 — May 2022</div>
+      <div class="tl-role">Software Engineering Intern</div>
+      <div class="tl-co">TTek</div>
+      <ul class="tl-bullets">
+        <li>Engineered educational website in React to record student learning achievements and deliver learning reports</li>
+        <li>Integrated dynamic backend using Google Firebase</li>
+      </ul>
+    </div>
+    <div class="tl-item reveal reveal-delay-3">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Mar 2021 — Jul 2021</div>
+      <div class="tl-role">Software Engineering Intern</div>
+      <div class="tl-co">Kenari Adaptive Learning</div>
+      <ul class="tl-bullets">
+        <li>Constructed a gamified Angular website for elementary students covering grammar, reading comprehension, vocabulary, and spelling</li>
+        <li>Elevated UI/UX efficiency by implementing Angular components with Google Firebase backend</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <p class="sec-label">03 · Projects</p>
+    <h2 class="sec-title">Things I've built</h2>
+  </div>
+  <div class="proj-grid">
+
+    <!-- TD Bank Gen AI -->
+    <div class="proj-card reveal reveal-delay-1">
+      <div class="proj-head">
+        <div class="proj-icon">🤖</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/dsi-capstone-spring-2025-TD-gen-ai" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">Gen AI Advisor — TD Bank</div>
+      <div class="proj-desc">Columbia DSI capstone with TD Bank. Designed reranking, hybrid search, and abstention mechanisms for a GPT-4o-powered chatbot using RAG pipelines. Enhanced reliability through semantic similarity scoring and intelligent fallback logic.</div>
+      <div class="tags"><span class="tag">Python</span><span class="tag">GPT-4o</span><span class="tag">RAG</span><span class="tag">LangChain</span><span class="tag">Pinecone</span><span class="tag">Hybrid Search</span></div>
+    </div>
+
+    <!-- Forecasting Retail Sales -->
+    <div class="proj-card reveal reveal-delay-2">
+      <div class="proj-head">
+        <div class="proj-icon">📦</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/forecasting-retail-sales" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">Forecasting Online Retail Sales</div>
+      <div class="proj-desc">Predicted daily unit sales for a UK-based retailer using Prophet, LSTM, DeepAR, and Temporal Fusion Transformer. Applied K-Means, DBSCAN, and HDBSCAN for product segmentation, and integrated Gemini 2.5 LLM embeddings for semantic clustering.</div>
+      <div class="tags"><span class="tag">Python</span><span class="tag">TFT</span><span class="tag">DeepAR</span><span class="tag">LSTM</span><span class="tag">Prophet</span><span class="tag">Gemini</span><span class="tag">PyTorch</span></div>
+    </div>
+
+    <!-- Electricity Forecasting -->
+    <div class="proj-card reveal reveal-delay-1">
+      <div class="proj-head">
+        <div class="proj-icon">⚡</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/forecasting-electricity-consumption" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">Electricity Consumption Forecasting</div>
+      <div class="proj-desc">Forecasted daily electricity usage for 264 Portuguese clients using LSTM RNN, SARIMAX, Prophet, and Holt-Winters. Applied K-Medoids consensus clustering to manage customer heterogeneity — best MAPE of 4.9% with LSTM.</div>
+      <div class="tags"><span class="tag">Python</span><span class="tag">LSTM</span><span class="tag">SARIMAX</span><span class="tag">Prophet</span><span class="tag">PyTorch</span><span class="tag">Time Series</span></div>
+    </div>
+
+    <!-- Video Game Toxicity -->
+    <div class="proj-card reveal reveal-delay-2">
+      <div class="proj-head">
+        <div class="proj-icon">🎮</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/classifying-video-game-toxicity" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">Video Game Toxicity Classifier</div>
+      <div class="proj-desc">Text classification pipeline detecting toxicity across Twitter, Twitch, and Discord gaming communities. Compared GPT-2 and BERT-base under no tuning, full fine-tuning, and LoRA strategies using Hugging Face Transformers.</div>
+      <div class="tags"><span class="tag">Python</span><span class="tag">BERT</span><span class="tag">GPT-2</span><span class="tag">LoRA</span><span class="tag">Hugging Face</span><span class="tag">PyTorch</span></div>
+    </div>
+
+    <!-- CitiBike -->
+    <div class="proj-card reveal reveal-delay-1">
+      <div class="proj-head">
+        <div class="proj-icon">🚲</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/citibike-ML-analysis" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">CitiBike Usage Analysis &amp; Forecasting</div>
+      <div class="proj-desc">Analyzed NYC bike-sharing patterns using linear/logistic regression, random forest, and a PyTorch neural network. Applied K-Means for user segmentation and ARIMA/SARIMA to model ride volume trends.</div>
+      <div class="tags"><span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">ARIMA</span><span class="tag">scikit-learn</span><span class="tag">Clustering</span></div>
+    </div>
+
+    <!-- CSXL -->
+    <div class="proj-card reveal reveal-delay-2">
+      <div class="proj-head">
+        <div class="proj-icon">🎓</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/unc-csxl/csxl.unc.edu" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+          <a href="https://csxl.unc.edu/welcome" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/></svg> Live ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">UNC CS Experience Labs (CSXL)</div>
+      <div class="proj-desc">Open-source platform for the UNC Computer Science Experience Labs, supporting student community, office hours, reservations, and CS organization management. A full-stack production app used by UNC's CS department.</div>
+      <div class="tags"><span class="tag">React</span><span class="tag">Angular</span><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">Open Source</span></div>
+    </div>
+
+    <!-- IoT App Server -->
+    <div class="proj-card reveal reveal-delay-1">
+      <div class="proj-head">
+        <div class="proj-icon">🌐</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/ciscops/iot-application-server" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+          <a href="https://developer.cisco.com/codeexchange/github/repo/ciscops/iot-application-server/" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/></svg> DevNet ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">IoT Application Server — Cisco</div>
+      <div class="proj-desc">LoRaWAN sensor-based solutions for tracking US Navy flightline assets and monitoring labs at Cisco's Herndon office. Presented at Cisco Live to 20,000+ attendees and featured on Cisco Code Exchange.</div>
+      <div class="tags"><span class="tag">Node-RED</span><span class="tag">Grafana</span><span class="tag">MongoDB</span><span class="tag">InfluxDB</span><span class="tag">IoT</span><span class="tag">LoRaWAN</span></div>
+    </div>
+
+    <!-- Feather -->
+    <div class="proj-card reveal reveal-delay-1">
+      <div class="proj-head">
+        <div class="proj-icon">🐦</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/feather" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+          <a href="https://devpost.com/software/feather-jpfhn9" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/></svg> Devpost ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">Feather <span class="award-badge">🏆 Pearl Hacks 2024</span></div>
+      <div class="proj-desc">Mobile app where users photograph nearby birds and share them to a global feed for nature lovers. Won <strong>Most Creative Use of Redis Cloud</strong> at Pearl Hacks 2024.</div>
+      <div class="tags"><span class="tag">React Native</span><span class="tag">Auth0</span><span class="tag">Redis Cloud</span><span class="tag">SQLite</span><span class="tag">REST APIs</span></div>
+    </div>
+
+    <!-- Kiwi -->
+    <div class="proj-card reveal reveal-delay-2">
+      <div class="proj-head">
+        <div class="proj-icon">🥝</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/jadekeegan/kiwi" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+          <a href="https://devpost.com/software/kiwi-bwd17t" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/></svg> Devpost ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">Kiwi <span class="award-badge">🏆 Pearl Hacks 2023</span></div>
+      <div class="proj-desc">Automated budget tracker that processes physical and digital receipts and generates personalized budgeting calculations based on income and savings goals. Won <strong>Best Use of Twilio</strong> at Pearl Hacks 2023.</div>
+      <div class="tags"><span class="tag">React.js</span><span class="tag">JavaScript</span><span class="tag">Twilio</span><span class="tag">HTML/CSS</span></div>
+    </div>
+
+    <!-- OTIS -->
+    <div class="proj-card reveal reveal-delay-1">
+      <div class="proj-head">
+        <div class="proj-icon">🏢</div>
+        <div class="proj-links-row">
+          <a href="https://github.com/briannata/otis" target="_blank" rel="noopener" class="proj-gh"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-name">OTIS <span class="award-badge">🥈 Webex Global Hackathon</span></div>
+      <div class="proj-desc">MERN stack web app tracking building occupancy using Computer Vision and ML, deployed on Heroku with AWS. Won <strong>2nd place out of 100+ international teams</strong> at the Global Cisco Webex Hackathon.</div>
+      <div class="tags"><span class="tag">MongoDB</span><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Computer Vision</span><span class="tag">AWS</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="reveal">
+    <p class="sec-label">04 · Education</p>
+    <h2 class="sec-title">Where I studied</h2>
+  </div>
+  <div class="edu-cards">
+    <div class="edu-card reveal reveal-delay-1">
+      <div style="flex:1;min-width:220px;">
+        <div class="edu-deg">MS in Data Science</div>
+        <div class="edu-school">Columbia University · New York, NY</div>
+        <div class="edu-meta">GPA: 4.00 / 4.00</div>
+        <div class="edu-courses"><span class="edu-courses-label">Courses:</span> Deep Learning, Machine Learning, Exploratory Data Analysis and Visualization, Computer Systems, Forecasting</div>
+      </div>
+      <div class="edu-yr">May 2025</div>
+    </div>
+    <div class="edu-card edu-card-col reveal reveal-delay-2">
+      <div class="edu-top">
+        <div>
+          <div class="edu-deg">BS in Computer Science · Minor in Data Science</div>
+          <div class="edu-school">UNC Chapel Hill · Chapel Hill, NC</div>
+          <div class="edu-meta">GPA: 3.98 / 4.00</div>
+        </div>
+        <div class="edu-yr">May 2024</div>
+      </div>
+      <div class="edu-activities">
+        <div class="edu-act-label">Involvement</div>
+        <div class="edu-act-grid">
+          <div class="edu-act-item"><span class="edu-act-role">Lead Director &amp; Director of Development</span><span class="edu-act-org">HackNC</span></div>
+          <div class="edu-act-item"><span class="edu-act-role">President, VP &amp; Tech Lead</span><span class="edu-act-org">CS + Social Good</span></div>
+          <div class="edu-act-item"><span class="edu-act-role">Ambassador</span><span class="edu-act-org">Computer Science Experience Lab</span></div>
+          <div class="edu-act-item"><span class="edu-act-role">Outreach Committee</span><span class="edu-act-org">Girls Who Code</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="reveal">
+    <p class="sec-label">05 · Skills</p>
+    <h2 class="sec-title">What I work with</h2>
+  </div>
+  <div class="skills-groups">
+    <div class="reveal reveal-delay-1">
+      <div class="sg-label">Certifications</div>
+      <div class="skill-tags">
+        <a href="https://www.credly.com/badges/c167621b-d863-4738-a140-b48111499b70/linked_in_profile" target="_blank" rel="noopener" class="skill-tag cert-tag">Cisco Certified CyberOps Associate ↗</a>
+        <a href="https://cs50.harvard.edu/certificates/ec8cf07b-99d7-4aba-8f87-edca5884d47d" target="_blank" rel="noopener" class="skill-tag cert-tag">Harvard CS50 AI with Python ↗</a>
+        <a href="https://www.credly.com/badges/4e30727a-214b-40ad-8304-3dcbfa853358/linked_in_profile" target="_blank" rel="noopener" class="skill-tag cert-tag">NVIDIA-Certified Associate: AI Infrastructure &amp; Operations ↗</a>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="sg-label">Programming Languages</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">JavaScript (React, Angular, Node, Express)</span>
+        <span class="skill-tag">Java</span>
+        <span class="skill-tag">C</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">R</span>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="sg-label">AI / ML</div>
+      <div class="skill-tags">
+        <span class="skill-tag">TensorFlow</span>
+        <span class="skill-tag">PyTorch</span>
+        <span class="skill-tag">Hugging Face</span>
+        <span class="skill-tag">LoRA Fine-Tuning</span>
+        <span class="skill-tag">OpenAI API</span>
+        <span class="skill-tag">Cohere</span>
+        <span class="skill-tag">Ollama</span>
+        <span class="skill-tag">Pinecone</span>
+        <span class="skill-tag">RAG</span>
+        <span class="skill-tag">Prophet</span>
+        <span class="skill-tag">LSTM</span>
+        <span class="skill-tag">DeepAR</span>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="sg-label">Web &amp; Frameworks</div>
+      <div class="skill-tags">
+        <span class="skill-tag">FastAPI</span>
+        <span class="skill-tag">Streamlit</span>
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">D3</span>
+        <span class="skill-tag">Tableau</span>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="sg-label">Data &amp; Databases</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Pandas</span>
+        <span class="skill-tag">MongoDB</span>
+        <span class="skill-tag">Google Firebase</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">SQLAlchemy</span>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="sg-label">Cloud &amp; DevOps</div>
+      <div class="skill-tags">
+        <span class="skill-tag">AWS Lambda</span>
+        <span class="skill-tag">GitHub Actions</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">Jenkins</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span>Designed &amp; built by Brianna Ta · 2025</span>
+  <span><a href="mailto:brianna.hy.ta@gmail.com">brianna.hy.ta@gmail.com</a></span>
+</footer>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let W, H;
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function getParticleCount() {
+  if (window.innerWidth < 600) return 40;
+  if (window.innerWidth < 900) return 60;
+  return 85;
+}
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function initParticles() {
+  particles = [];
+  const count = getParticleCount();
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5
+    });
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(139,92,246,0.55)';
+    ctx.fill();
+  });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(139,92,246,${0.12 * (1 - dist/120)})`;
+        ctx.lineWidth = 0.6;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { resize(); initParticles(); }, 150);
+});
+resize();
+initParticles();
+if (!prefersReduced) {
+  drawParticles();
+} else {
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(139,92,246,0.55)';
+    ctx.fill();
+  });
+}
+
+const phrases = ['Software Engineer', 'Data Scientist', 'ML Engineer', 'Full-Stack Dev'];
+let pi = 0, ci = 0, deleting = false;
+const tw = document.getElementById('tw');
+function typeLoop() {
+  const phrase = phrases[pi];
+  if (!deleting) {
+    tw.textContent = phrase.slice(0, ci + 1);
+    ci++;
+    if (ci === phrase.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
+    setTimeout(typeLoop, 80);
+  } else {
+    tw.textContent = phrase.slice(0, ci - 1);
+    ci--;
+    if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(typeLoop, 300); return; }
+    setTimeout(typeLoop, 45);
+  }
+}
+setTimeout(typeLoop, 1400);
+
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+reveals.forEach(r => revealObs.observe(r));
+
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const mobileLinks = document.querySelectorAll('.mobile-nav a[data-m]');
+const spyObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(a => a.classList.toggle('active', a.dataset.s === id));
+      mobileLinks.forEach(a => a.classList.toggle('active', a.dataset.m === id));
+    }
+  });
+}, { threshold: 0.35 });
+sections.forEach(s => spyObs.observe(s));
+
+const menuBtn = document.getElementById('menuBtn');
+const closeBtn = document.getElementById('closeBtn');
+const mobileNav = document.getElementById('mobileNav');
+
+function openMenu() {
+  mobileNav.classList.add('open');
+  menuBtn.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  mobileNav.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
+menuBtn.addEventListener('click', openMenu);
+closeBtn.addEventListener('click', closeMenu);
+mobileNav.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', closeMenu);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeMenu();
+});
+</script>
+</body>
+</html>
